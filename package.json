@@ -1,0 +1,11 @@
+{
+  "name": "geomaker",
+  "version": "0.1.0",
+  "description": "GeoMaker — an organic pattern / generative art studio that runs entirely in the browser.",
+  "type": "module",
+  "scripts": {
+    "start": "python3 -m http.server 8123",
+    "test": "node test/smoke.mjs"
+  },
+  "license": "MIT"
+}
