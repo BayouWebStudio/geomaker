@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import { createRng, randomSeedString } from '../js/core/rng.js';
 import { createNoise } from '../js/core/noise.js';
 import { PALETTES } from '../js/core/palettes.js';
-import { samplePalette, mixHex, withAlpha, clamp } from '../js/core/util.js';
+import { samplePalette, mixHex, withAlpha, clamp, adjustSaturation } from '../js/core/util.js';
 import { ALGORITHMS } from '../js/algos/index.js';
 
 // rng determinism + bounds
@@ -63,11 +63,14 @@ import { ALGORITHMS } from '../js/algos/index.js';
   assert.equal(samplePalette(['#123456'], 0.7), '#123456');
   assert.equal(withAlpha('#ff0000', 0.5), 'rgba(255,0,0,0.5)');
   assert.equal(clamp(5, 0, 3), 3);
+  assert.equal(adjustSaturation('#ff0000', 1), '#ff0000', 'factor 1 is identity');
+  assert.equal(adjustSaturation('#ff0000', 0), '#808080', 'full desaturation goes gray');
+  assert.equal(adjustSaturation('#777777', 0.5), '#777777', 'gray stays gray');
 }
 
 // algorithm registry + parameter schemas
 {
-  assert.equal(ALGORITHMS.length, 5);
+  assert.equal(ALGORITHMS.length, 7);
   const ids = new Set();
   for (const algo of ALGORITHMS) {
     assert.ok(algo.id && algo.name && algo.description);

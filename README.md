@@ -1,6 +1,6 @@
 # GeoMaker
 
-**An organic pattern studio in your browser.** Five generative-art algorithms, a panel full of levers, seeded randomness so every piece is reproducible, and one-click PNG export. No build step, no dependencies — just open it.
+**An organic pattern studio in your browser.** Seven generative-art algorithms, a panel full of levers, global look controls (desaturate, paper grain, vignette), seeded randomness so every piece is reproducible, and one-click PNG export. No build step, no dependencies — just open it.
 
 ![GeoMaker — Silk Flow](screenshots/hero.jpg)
 
@@ -21,12 +21,27 @@ Then open <http://localhost:8123>. (ES modules need http; opening `index.html` d
 |---|---|
 | ![Coral Growth](screenshots/coral.jpg) | ![Turing Patterns](screenshots/turing.jpg) |
 | ![Ridgelines](screenshots/ridge.jpg) | ![Mycelium](screenshots/mycelium.jpg) |
+| ![Pebbles](screenshots/pebbles.jpg) | ![Contours](screenshots/contours.jpg) |
 
 - **Silk Flow** — thousands of particles ride a layered Perlin noise field; their low-alpha trails accumulate into silky ribbons. Levers: particle count, noise scale, swirl, speed, ink opacity/amount, color mapping, edge behavior.
 - **Coral Growth** — differential growth: a loop of nodes that attract their neighbors, repel everything nearby, and split stretched edges, buckling like coral or brain tissue. Watch it grow live, with optional onion-skin trails (growth rings).
 - **Turing Patterns** — Gray-Scott reaction-diffusion on a torus. Presets for coral / mitosis / worms / maze / solitons, plus raw feed & kill sliders, seeding styles and banded rendering.
 - **Ridgelines** — stacked noise-displaced ridge lines with occlusion fills, like mountain strata or a topographic record. Can animate with a slow drift.
 - **Mycelium** — branching, self-avoiding random walkers that wander, fork, taper and die when they touch existing growth: roots, lightning, fungal nets.
+- **Pebbles** — organic circle packing drawn as noise-wobbled flat blobs: terrazzo, river stones, cells. Includes an "offset ink" misprint mode and outline-only mode.
+- **Contours** — a topographic map of a fractal noise landscape: smooth elevation bands plus marching-squares iso-lines, optionally drifting.
+
+## The Look panel (make it illustrative)
+
+Global post-processing that applies to every algorithm:
+
+- **Saturation** (0–1.5) — pull any palette toward muted, print-like tones, or fully grayscale; swatches preview the adjustment live.
+- **Paper grain** — seeded film-grain overlay for a printed/risograph texture.
+- **Vignette** — soft darkened edges for a vintage plate look.
+
+All three are baked into PNG exports and encoded in share links. Desaturated Botanic + grain + vignette, for example:
+
+![Illustrative look](screenshots/illustrative.jpg)
 
 ## Controls
 

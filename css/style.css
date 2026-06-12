@@ -35,6 +35,15 @@ body {
   display: block;
 }
 
+/* post-process layer (grain + vignette), blended over the art */
+#fx {
+  position: fixed;
+  inset: 0;
+  display: block;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
 /* ---------- panel ---------- */
 
 #panel {

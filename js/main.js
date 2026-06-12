@@ -3,13 +3,23 @@
 import { createRng, randomSeedString } from './core/rng.js';
 import { createNoise } from './core/noise.js';
 import { PALETTES, getPalette } from './core/palettes.js';
+import { adjustSaturation } from './core/util.js';
 import { ALGORITHMS, algoById } from './algos/index.js';
 import { buildControls } from './ui.js';
 
 const STORAGE_KEY = 'geomaker-state-v1';
 
+// global post-processing controls, applied on top of every algorithm
+const LOOK_SCHEMA = [
+  { key: 'sat', label: 'Saturation', type: 'range', min: 0, max: 1.5, step: 0.05, value: 1 },
+  { key: 'grain', label: 'Paper grain', type: 'range', min: 0, max: 0.6, step: 0.02, value: 0 },
+  { key: 'vignette', label: 'Vignette', type: 'range', min: 0, max: 0.5, step: 0.02, value: 0 },
+];
+
 const canvas = document.getElementById('art');
 const ctx = canvas.getContext('2d');
+const fxCanvas = document.getElementById('fx');
+const fxCtx = fxCanvas.getContext('2d');
 
 const els = {
   panel: document.getElementById('panel'),
@@ -21,6 +31,7 @@ const els = {
   dice: document.getElementById('seed-dice'),
   palette: document.getElementById('palette-select'),
   swatches: document.getElementById('swatches'),
+  look: document.getElementById('look-controls'),
   params: document.getElementById('param-controls'),
   shuffle: document.getElementById('btn-shuffle'),
   regen: document.getElementById('btn-regen'),
@@ -35,7 +46,18 @@ const state = {
   seed: randomSeedString(),
   paletteName: PALETTES[0].name,
   params: {}, // per-algorithm overrides: { algoId: { key: value } }
+  look: { sat: 1, grain: 0, vignette: 0 },
 };
+
+function adjustedPalette() {
+  const base = getPalette(state.paletteName);
+  if (state.look.sat === 1) return base;
+  return {
+    ...base,
+    bg: adjustSaturation(base.bg, state.look.sat),
+    colors: base.colors.map((c) => adjustSaturation(c, state.look.sat)),
+  };
+}
 
 let instance = null;
 let playing = false;
@@ -55,12 +77,55 @@ function fitCanvas() {
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   const w = window.innerWidth;
   const h = window.innerHeight;
-  canvas.width = Math.round(w * dpr);
-  canvas.height = Math.round(h * dpr);
-  canvas.style.width = w + 'px';
-  canvas.style.height = h + 'px';
+  for (const c of [canvas, fxCanvas]) {
+    c.width = Math.round(w * dpr);
+    c.height = Math.round(h * dpr);
+    c.style.width = w + 'px';
+    c.style.height = h + 'px';
+  }
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   return { w, h };
+}
+
+// Grain + vignette live on the #fx canvas (blend mode: overlay). Neutral gray
+// (128) is a no-op under overlay, so grain speckles around 128 and the
+// vignette pulls toward black at the edges.
+function updateFx() {
+  const { grain, vignette } = state.look;
+  const w = fxCanvas.width;
+  const h = fxCanvas.height;
+  fxCtx.setTransform(1, 0, 0, 1, 0, 0);
+  fxCtx.clearRect(0, 0, w, h);
+  if (grain <= 0 && vignette <= 0) return;
+
+  if (grain > 0) {
+    const rng = createRng(`${state.seed}::fx`);
+    const tile = document.createElement('canvas');
+    tile.width = 192;
+    tile.height = 192;
+    const tctx = tile.getContext('2d');
+    const img = tctx.createImageData(192, 192);
+    for (let i = 0; i < img.data.length; i += 4) {
+      const g = Math.max(0, Math.min(255, 128 + (rng.random() - 0.5) * 255 * grain));
+      img.data[i] = img.data[i + 1] = img.data[i + 2] = g;
+      img.data[i + 3] = 255;
+    }
+    tctx.putImageData(img, 0, 0);
+    fxCtx.fillStyle = fxCtx.createPattern(tile, 'repeat');
+    fxCtx.fillRect(0, 0, w, h);
+  } else {
+    fxCtx.fillStyle = '#808080';
+    fxCtx.fillRect(0, 0, w, h);
+  }
+
+  if (vignette > 0) {
+    const r = Math.hypot(w, h) / 2;
+    const grad = fxCtx.createRadialGradient(w / 2, h / 2, r * 0.45, w / 2, h / 2, r * 1.05);
+    grad.addColorStop(0, 'rgba(0,0,0,0)');
+    grad.addColorStop(1, `rgba(0,0,0,${vignette * 0.9})`);
+    fxCtx.fillStyle = grad;
+    fxCtx.fillRect(0, 0, w, h);
+  }
 }
 
 function setPlayButton() {
@@ -71,7 +136,7 @@ function setPlayButton() {
 function regenerate() {
   const algo = algoById(state.algoId);
   const { w, h } = fitCanvas();
-  const palette = getPalette(state.paletteName);
+  const palette = adjustedPalette();
   // namespace the seed per algorithm so switching algos gives fresh compositions
   const rng = createRng(`${state.seed}::${algo.id}`);
   const noise = createNoise(rng);
@@ -81,6 +146,7 @@ function regenerate() {
   finished = false;
   playing = true;
   setPlayButton();
+  updateFx();
   updateHash();
   persist();
 }
@@ -106,6 +172,7 @@ function updateHash() {
   qs.set('p', state.paletteName);
   const params = currentParams(algo);
   for (const [k, v] of Object.entries(params)) qs.set('p_' + k, String(v));
+  for (const def of LOOK_SCHEMA) qs.set('g_' + def.key, String(state.look[def.key]));
   history.replaceState(null, '', '#' + qs.toString());
 }
 
@@ -137,6 +204,11 @@ function applySnapshot(snap) {
       state.params[algo.id] = clean;
     }
   }
+  if (snap.look && typeof snap.look === 'object') {
+    for (const def of LOOK_SCHEMA) {
+      if (snap.look[def.key] !== undefined) state.look[def.key] = coerce(def, String(snap.look[def.key]));
+    }
+  }
 }
 
 function loadFromHash() {
@@ -150,11 +222,17 @@ function loadFromHash() {
     const raw = qs.get('p_' + def.key);
     if (raw !== null) params[def.key] = raw;
   }
+  const look = {};
+  for (const def of LOOK_SCHEMA) {
+    const raw = qs.get('g_' + def.key);
+    if (raw !== null) look[def.key] = raw;
+  }
   applySnapshot({
     algoId,
     seed: qs.get('s') || state.seed,
     paletteName: qs.get('p') || state.paletteName,
     params: { [algoId]: params },
+    look,
   });
   return true;
 }
@@ -189,7 +267,7 @@ function toast(msg) {
 }
 
 function renderSwatches() {
-  const palette = getPalette(state.paletteName);
+  const palette = adjustedPalette();
   els.swatches.textContent = '';
   const chips = [palette.bg, ...palette.colors];
   for (const c of chips) {
@@ -234,7 +312,19 @@ function surprise() {
 
 function savePng() {
   const algo = algoById(state.algoId);
-  canvas.toBlob((blob) => {
+  let source = canvas;
+  if (state.look.grain > 0 || state.look.vignette > 0) {
+    // bake the fx overlay into the export with the same blend the screen uses
+    const tmp = document.createElement('canvas');
+    tmp.width = canvas.width;
+    tmp.height = canvas.height;
+    const tctx = tmp.getContext('2d');
+    tctx.drawImage(canvas, 0, 0);
+    tctx.globalCompositeOperation = 'overlay';
+    tctx.drawImage(fxCanvas, 0, 0);
+    source = tmp;
+  }
+  source.toBlob((blob) => {
     if (!blob) return;
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -284,6 +374,18 @@ function init() {
   els.palette.value = state.paletteName;
   els.seed.value = state.seed;
   renderSwatches();
+  buildControls(els.look, LOOK_SCHEMA, state.look, (key, value) => {
+    state.look[key] = value;
+    if (key === 'sat') {
+      // saturation is baked into the strokes, so re-render the art
+      renderSwatches();
+      debounceRegen();
+    } else {
+      updateFx();
+      updateHash();
+      persist();
+    }
+  });
   rebuildParamControls();
 
   els.algo.addEventListener('change', () => {
