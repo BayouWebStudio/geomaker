@@ -1,6 +1,6 @@
 # GeoMaker
 
-**A pattern studio in your browser.** Nineteen generative-art algorithms — organic, geometric, traditional Japanese, and hands-on interactive — a panel full of levers, global look controls (desaturate, paper grain, vignette), seeded randomness so every piece is reproducible, and one-click PNG export. No build step, no dependencies — just open it.
+**A pattern studio in your browser.** Twenty-seven generative-art algorithms — organic, geometric, fractal, traditional Japanese & world patterns, and hands-on interactive — a panel full of levers, global look controls (desaturate, paper grain, vignette), seeded randomness so every piece is reproducible, and one-click PNG export. No build step, no dependencies — just open it.
 
 ![GeoMaker — Silk Flow](screenshots/hero.jpg)
 
@@ -44,6 +44,8 @@ shares the same machinery — seed, palette, Look controls, share links and PNG 
 | ![Flower of Life](screenshots/geo-flower.jpg) | ![Mandala](screenshots/geo-mandala.jpg) |
 | ![Hex Wallpaper — cubes](screenshots/geo-hexcubes.jpg) | ![Hex Wallpaper — rosette](screenshots/geo-hexrosette.jpg) |
 | ![Truchet — arcs](screenshots/geo-truchet.jpg) | ![Phyllotaxis](screenshots/geo-phyllotaxis.jpg) |
+| ![Islamic Girih](screenshots/geo-girih.jpg) | ![Celtic Knot](screenshots/geo-celtic.jpg) |
+| ![Quasicrystal](screenshots/geo-quasicrystal.jpg) | ![Cellular Automata — Rule 30](screenshots/geo-automata.jpg) |
 
 - **Flower of Life** — the classic sacred-geometry lattice of equal circles whose centers sit one radius apart, blooming into vesica-piscis petals. Levers: rings of circles, radius, rotation, boundary ring + clip, stained-glass fill, color-by-ring/angle.
 - **Hex Wallpaper** — hexagonal tiling with four motifs: solid honeycomb, nested concentric hexagons, isometric cubes (3-rhombi shading), and a six-petal rosette in every cell. Levers: motif, hex size, flat/pointy orientation, gap, nested count, color mode, per-tile color variation.
@@ -51,6 +53,22 @@ shares the same machinery — seed, palette, Look controls, share links and PNG 
 - **Truchet** — randomly oriented tiles that knit into flowing weaves, mazes and op-art. Styles: quarter-arcs, diagonals, two-tone triangles, plus an optional multi-scale subdivide for varied density.
 - **Phyllotaxis** *(interactive)* — a sunflower seed-head at the golden angle (Vogel's model). Drag ↔ to detune the divergence angle and watch the spiral arms reorganize, ↕ to change the spacing.
 - **Moiré** *(interactive)* — interference fringes from two overlaid gratings (concentric rings or parallel lines). Drag to move the second layer and shimmer the moiré.
+- **Islamic Girih** — Islamic geometric star patterns: interlocking {n/m} star polygons (8-, 10- or 12-point) on interleaved grids, forming the classic star-and-cross strapwork.
+- **Celtic Knot** — interlaced plaitwork: woven cords that pass over and under by parity, on a straight or diagonal weave.
+- **Cellular Automata** — elementary 1D rules drawn as a space-time triangle (Rule 30/90/110…), or a 2D cyclic automaton that self-organizes into spiral waves.
+- **Quasicrystal** *(interactive)* — many plane waves overlaid into a quasiperiodic interference lattice with N-fold symmetry. Drag to spin and phase-shift it.
+- **Textile Weave** — woven cloth: tartan plaid (crossing warp/weft threads), argyle diamonds with overstitch, or houndstooth check.
+
+### Fractal
+
+| | |
+|---|---|
+| ![Mandelbrot](screenshots/geo-mandelbrot.jpg) | ![L-system plant](screenshots/geo-lsystem.jpg) |
+| ![Apollonian gasket](screenshots/geo-apollonian.jpg) | |
+
+- **Mandelbrot / Julia** *(interactive)* — the escape-time fractal, smooth-shaded. Drag to pan the Mandelbrot, or switch to Julia and drag to morph the seed; zoom and iteration sliders go deep.
+- **L-system** *(interactive)* — Lindenmayer rewrite grammars drawn with a turtle: fractal plants, bushes, the Koch curve, the dragon curve and Sierpinski. Drag to bend the branching angle.
+- **Apollonian Gasket** — infinitely nested mutually-tangent circles, filled via the Descartes Circle Theorem.
 
 ## Interactive patterns (tap & drag)
 
@@ -99,7 +117,7 @@ All three are baked into PNG exports and encoded in share links. Desaturated Bot
 ## Controls
 
 - **Seed** — every artwork is deterministic. Same seed + same settings = same art. Type anything, or roll the dice.
-- **Palettes** — 14 curated palettes from plotter-style ink on cream to neon on black.
+- **Palettes** — 18 curated palettes. Opens on monochrome **Graphite**; **Noir**, **Silver**, **Slate**, **Ink** and **Chalk** are all black/grey, with colour palettes (Abyss, Ember, Riso Pop, Neon Garden…) one click away. The **Saturation** lever (below) also turns *any* palette fully grayscale.
 - **Tuning** — every algorithm exposes its parameters as live sliders/selects; changes re-render immediately.
 - **🎲 Surprise me** (space) — new seed + random palette.
 - **⬇ Save** (s) — downloads the canvas as a PNG at full device resolution.

@@ -2,6 +2,11 @@
 // and are sampled as a continuous gradient (see samplePalette).
 
 export const PALETTES = [
+  // black & grey first — the default opens monochrome
+  { name: 'Graphite', bg: '#eceae6', colors: ['#161616', '#3f3f3f', '#6a6a6a', '#9a9a9a', '#c6c6c6'] },
+  { name: 'Noir', bg: '#08080a', colors: ['#f2f2f4', '#c0c0c6', '#8c8c94', '#5a5a62', '#33333a'] },
+  { name: 'Silver', bg: '#16161a', colors: ['#2e2e36', '#565660', '#84848f', '#b4b4be', '#ebebf2'] },
+  { name: 'Slate', bg: '#c9cacd', colors: ['#1f2124', '#3c4046', '#5e636b', '#878d96'] },
   { name: 'Porcelain', bg: '#f5f0e6', colors: ['#1c2541', '#2c4a7f', '#4f7cac', '#86a8c9'] },
   { name: 'Abyss', bg: '#061018', colors: ['#0d3b4f', '#15637f', '#2196a6', '#5fd0c7', '#c9f2e9'] },
   { name: 'Ember', bg: '#140d0b', colors: ['#641909', '#a83208', '#e25f1c', '#f7a325', '#ffe9b8'] },

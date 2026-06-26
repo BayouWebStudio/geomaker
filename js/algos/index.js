@@ -17,12 +17,20 @@ import wagara from './wagara.js';
 import kumiko from './kumiko.js';
 import kintsugi from './kintsugi.js';
 import shibori from './shibori.js';
+import automata from './automata.js';
+import quasicrystal from './quasicrystal.js';
+import textile from './textile.js';
+import mandelbrot from './mandelbrot.js';
+import lsystem from './lsystem.js';
+import apollonian from './apollonian.js';
+import girih from './girih.js';
+import celtic from './celtic.js';
 
-// Organic generators first, then the geometric/sacred-geometry set. The UI
-// groups them by each algorithm's `category` (defaulting to "Organic").
+// Grouped in the UI by each algorithm's `category` (defaulting to "Organic").
 export const ALGORITHMS = [
   flow, coral, turing, ridge, mycelium, pebbles, contours, suminagashi, voronoi, kintsugi, shibori,
-  flower, hexweave, mandala, truchet, phyllotaxis, moire, wagara, kumiko,
+  flower, hexweave, mandala, truchet, phyllotaxis, moire, wagara, kumiko, automata, quasicrystal, textile,
+  girih, celtic, mandelbrot, lsystem, apollonian,
 ];
 
 export function algoById(id) {
