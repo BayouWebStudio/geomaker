@@ -27,6 +27,7 @@ const els = {
   hideUi: document.getElementById('hide-ui'),
   algo: document.getElementById('algo-select'),
   algoDesc: document.getElementById('algo-desc'),
+  algoHint: document.getElementById('algo-hint'),
   seed: document.getElementById('seed-input'),
   dice: document.getElementById('seed-dice'),
   palette: document.getElementById('palette-select'),
@@ -145,11 +146,47 @@ function regenerate() {
   instance = algo.create({ ctx, width: w, height: h, rng, noise, palette, params: currentParams(algo) });
   finished = false;
   playing = true;
+  canvas.style.cursor = algo.interactive ? 'crosshair' : 'default';
   setPlayButton();
   updateFx();
   updateHash();
   persist();
 }
+
+// ---- canvas pointer interaction (algorithms opt in via onDown/onMove/onUp) ----
+
+let pointer = null;
+function canvasXY(e) {
+  const r = canvas.getBoundingClientRect();
+  return [e.clientX - r.left, e.clientY - r.top];
+}
+canvas.addEventListener('pointerdown', (e) => {
+  if (!instance || !(instance.onDown || instance.onMove || instance.onUp)) return;
+  const [x, y] = canvasXY(e);
+  pointer = { lastX: x, lastY: y, dist: 0, id: e.pointerId };
+  canvas.setPointerCapture?.(e.pointerId);
+  playing = true; // resume the loop so interactive redraws are shown
+  instance.onDown?.(x, y);
+  e.preventDefault();
+});
+canvas.addEventListener('pointermove', (e) => {
+  if (!pointer || !instance) return;
+  const [x, y] = canvasXY(e);
+  const dx = x - pointer.lastX;
+  const dy = y - pointer.lastY;
+  pointer.dist += Math.hypot(dx, dy);
+  pointer.lastX = x;
+  pointer.lastY = y;
+  instance.onMove?.(x, y, dx, dy);
+});
+function endPointer(e) {
+  if (!pointer || !instance) return;
+  const [x, y] = canvasXY(e);
+  instance.onUp?.(x, y, pointer.dist);
+  pointer = null;
+}
+canvas.addEventListener('pointerup', endPointer);
+canvas.addEventListener('pointercancel', endPointer);
 
 function tick() {
   requestAnimationFrame(tick);
@@ -288,6 +325,8 @@ function debounceRegen() {
 function rebuildParamControls() {
   const algo = algoById(state.algoId);
   els.algoDesc.textContent = algo.description;
+  els.algoHint.textContent = algo.interactive && algo.hint ? `✦ ${algo.hint}` : '';
+  els.algoHint.hidden = !(algo.interactive && algo.hint);
   if (!state.params[algo.id]) state.params[algo.id] = {};
   buildControls(els.params, algo.params, currentParams(algo), (key, value) => {
     state.params[algo.id][key] = value;

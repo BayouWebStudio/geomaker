@@ -70,13 +70,15 @@ import { ALGORITHMS } from '../js/algos/index.js';
 
 // algorithm registry + parameter schemas
 {
-  assert.equal(ALGORITHMS.length, 11);
+  assert.equal(ALGORITHMS.length, 15);
   const ids = new Set();
   for (const algo of ALGORITHMS) {
     assert.ok(algo.id && algo.name && algo.description);
     assert.ok(!ids.has(algo.id), `duplicate algo id ${algo.id}`);
     ids.add(algo.id);
     assert.equal(typeof algo.create, 'function');
+    if (algo.category) assert.ok(['Organic', 'Geometric'].includes(algo.category), `bad category in ${algo.id}`);
+    if (algo.interactive) assert.ok(typeof algo.hint === 'string' && algo.hint.length, `interactive ${algo.id} needs a hint`);
     const keys = new Set();
     for (const def of algo.params) {
       assert.ok(def.key && def.label, `param missing key/label in ${algo.id}`);

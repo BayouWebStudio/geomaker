@@ -33,6 +33,7 @@ body {
   position: fixed;
   inset: 0;
   display: block;
+  touch-action: none; /* let interactive generators handle drags without scrolling */
 }
 
 /* post-process layer (grain + vignette), blended over the art */
@@ -196,6 +197,16 @@ body {
   font-size: 11.5px;
   line-height: 1.45;
   color: var(--muted);
+}
+
+.hint {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-radius: 8px;
+  padding: 7px 9px;
 }
 
 .control {
