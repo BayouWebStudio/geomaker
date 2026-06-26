@@ -358,11 +358,23 @@ function init() {
   restore();
   loadFromHash();
 
+  // group the algorithm dropdown by category (Organic / Geometric)
+  const groups = new Map();
   for (const algo of ALGORITHMS) {
-    const o = document.createElement('option');
-    o.value = algo.id;
-    o.textContent = algo.name;
-    els.algo.append(o);
+    const cat = algo.category || 'Organic';
+    if (!groups.has(cat)) groups.set(cat, []);
+    groups.get(cat).push(algo);
+  }
+  for (const [cat, list] of groups) {
+    const og = document.createElement('optgroup');
+    og.label = cat;
+    for (const algo of list) {
+      const o = document.createElement('option');
+      o.value = algo.id;
+      o.textContent = algo.name;
+      og.append(o);
+    }
+    els.algo.append(og);
   }
   for (const p of PALETTES) {
     const o = document.createElement('option');

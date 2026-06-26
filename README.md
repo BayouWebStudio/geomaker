@@ -1,6 +1,6 @@
 # GeoMaker
 
-**An organic pattern studio in your browser.** Seven generative-art algorithms, a panel full of levers, global look controls (desaturate, paper grain, vignette), seeded randomness so every piece is reproducible, and one-click PNG export. No build step, no dependencies — just open it.
+**A pattern studio in your browser.** Eleven generative-art algorithms — organic *and* geometric — a panel full of levers, global look controls (desaturate, paper grain, vignette), seeded randomness so every piece is reproducible, and one-click PNG export. No build step, no dependencies — just open it.
 
 ![GeoMaker — Silk Flow](screenshots/hero.jpg)
 
@@ -17,6 +17,11 @@ Then open <http://localhost:8123>. (ES modules need http; opening `index.html` d
 
 ## The algorithms
 
+The dropdown groups generators into **Organic** and **Geometric**. Every generator
+shares the same machinery — seed, palette, Look controls, share links and PNG export.
+
+### Organic
+
 | | |
 |---|---|
 | ![Coral Growth](screenshots/coral.jpg) | ![Turing Patterns](screenshots/turing.jpg) |
@@ -30,6 +35,19 @@ Then open <http://localhost:8123>. (ES modules need http; opening `index.html` d
 - **Mycelium** — branching, self-avoiding random walkers that wander, fork, taper and die when they touch existing growth: roots, lightning, fungal nets.
 - **Pebbles** — organic circle packing drawn as noise-wobbled flat blobs: terrazzo, river stones, cells. Includes an "offset ink" misprint mode and outline-only mode.
 - **Contours** — a topographic map of a fractal noise landscape: smooth elevation bands plus marching-squares iso-lines, optionally drifting.
+
+### Geometric (sacred geometry & tilings)
+
+| | |
+|---|---|
+| ![Flower of Life](screenshots/geo-flower.jpg) | ![Mandala](screenshots/geo-mandala.jpg) |
+| ![Hex Wallpaper — cubes](screenshots/geo-hexcubes.jpg) | ![Hex Wallpaper — rosette](screenshots/geo-hexrosette.jpg) |
+| ![Truchet — arcs](screenshots/geo-truchet.jpg) | ![Truchet — triangles](screenshots/geo-truchet-tri.jpg) |
+
+- **Flower of Life** — the classic sacred-geometry lattice of equal circles whose centers sit one radius apart, blooming into vesica-piscis petals. Levers: rings of circles, radius, rotation, boundary ring + clip, stained-glass fill, color-by-ring/angle.
+- **Hex Wallpaper** — hexagonal tiling with four motifs: solid honeycomb, nested concentric hexagons, isometric cubes (3-rhombi shading), and a six-petal rosette in every cell. Levers: motif, hex size, flat/pointy orientation, gap, nested count, color mode, per-tile color variation.
+- **Mandala** — kaleidoscopic rings of repeating motifs (petals, beads, diamonds, scallops…) with adjustable N-fold symmetry, ring count, mirroring and fill. The seed picks the per-ring motifs, so every seed is a different — but always symmetric — mandala.
+- **Truchet** — randomly oriented tiles that knit into flowing weaves, mazes and op-art. Styles: quarter-arcs, diagonals, two-tone triangles, plus an optional multi-scale subdivide for varied density.
 
 ## The Look panel (make it illustrative)
 
@@ -68,4 +86,4 @@ js/algos/           one module per algorithm, registered in index.js
 test/smoke.mjs      node smoke tests for the DOM-free modules (npm test)
 ```
 
-Adding an algorithm = one new file in `js/algos/` exporting `{ id, name, description, params, create() }`, plus one import in `js/algos/index.js`. The `create()` function receives `{ ctx, width, height, rng, noise, palette, params }` and returns `{ frame() }`; return `false` from `frame()` when the piece is finished.
+Adding an algorithm = one new file in `js/algos/` exporting `{ id, name, description, params, create() }` (plus an optional `category` of `'Organic'` or `'Geometric'` for the dropdown grouping), and one import in `js/algos/index.js`. The `create()` function receives `{ ctx, width, height, rng, noise, palette, params }` and returns `{ frame() }`; return `false` from `frame()` when the piece is finished (static patterns just draw once and return `false`).
