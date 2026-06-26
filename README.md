@@ -1,6 +1,6 @@
 # GeoMaker
 
-**A pattern studio in your browser.** Fifteen generative-art algorithms — organic, geometric, and hands-on interactive — a panel full of levers, global look controls (desaturate, paper grain, vignette), seeded randomness so every piece is reproducible, and one-click PNG export. No build step, no dependencies — just open it.
+**A pattern studio in your browser.** Nineteen generative-art algorithms — organic, geometric, traditional Japanese, and hands-on interactive — a panel full of levers, global look controls (desaturate, paper grain, vignette), seeded randomness so every piece is reproducible, and one-click PNG export. No build step, no dependencies — just open it.
 
 ![GeoMaker — Silk Flow](screenshots/hero.jpg)
 
@@ -54,18 +54,35 @@ shares the same machinery — seed, palette, Look controls, share links and PNG 
 
 ## Interactive patterns (tap & drag)
 
-Four generators respond to the pointer — drag right on the canvas (mouse or touch):
+Six generators respond to the pointer — drag right on the canvas (mouse or touch):
 
 | | |
 |---|---|
 | ![Suminagashi](screenshots/geo-suminagashi.jpg) | ![Suminagashi, combed by dragging](screenshots/geo-suminagashi-combed.jpg) |
 
 - **Suminagashi** (ink marbling) — each drop is an area-preserving map that expands the existing ink outward into concentric rings; combing shears them into waves. **Tap** to drop ink, **drag** to comb the surface (the right-hand image above is the left one after a few drags).
+- **Kintsugi** — tap to strike a fracture, drag to paint a gold vein (see below).
+- **Shibori** — kanoko: drag to print resist; arashi/itajime: drag to fold & angle (see below).
 - **Voronoi Cells** — tap to add a cell, drag to move the nearest.
 - **Phyllotaxis** — drag to detune the angle / spacing.
 - **Moiré** — drag to move the second grating.
 
 A `✦` hint appears in the panel whenever the selected generator is interactive. (Interactions are live and ephemeral — they aren't captured in the share link, which reproduces the seeded starting state.)
+
+## Japanese patterns (和柄)
+
+A family of traditional Japanese designs, from precise *wagara* tilings to interactive *kintsugi* and *shibori*.
+
+| | |
+|---|---|
+| ![Seigaiha](screenshots/geo-seigaiha.jpg) | ![Asanoha](screenshots/geo-asanoha.jpg) |
+| ![Kintsugi](screenshots/geo-kintsugi.jpg) | ![Shibori kanoko](screenshots/geo-shibori.jpg) |
+| ![Kumiko](screenshots/geo-kumiko.jpg) | |
+
+- **Wagara (和柄)** — eight classic patterns in one generator, switched by a dropdown: **seigaiha** (blue ocean waves), **asanoha** (hemp-leaf star lattice), **shippō** (linked "seven treasures" circles), **kikkō** (tortoiseshell hexagons), **kagome** (basket weave), **yagasuri** (arrow feathers), **uroko** (scales) and **ichimatsu** (checkerboard). Shared scale / line-width / two-tone-or-gradient levers.
+- **Kumiko (組子)** — the wooden shoji lattice: a square *jigumi* grid filled with fine muntin patterns (masu / diagonal star / kaku-asa square-hemp-leaf), with an optional wood-bevel highlight.
+- **Kintsugi (金継ぎ)** *(interactive)* — broken ceramic mended with metal. Voronoi shards filled as glaze, their seams stroked as gold/silver/copper veins. Tap to strike a new fracture, drag to paint a vein across the surface.
+- **Shibori (絞り)** *(interactive)* — indigo resist tie-dye: *kanoko* fawn-spots, *arashi* pole-wrap diagonals, *itajime* folded-clamp grid, all with soft dye-bleed edges. Drag to print resist or set the fold.
 
 ## The Look panel (make it illustrative)
 

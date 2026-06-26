@@ -13,12 +13,16 @@ import mandala from './mandala.js';
 import truchet from './truchet.js';
 import phyllotaxis from './phyllotaxis.js';
 import moire from './moire.js';
+import wagara from './wagara.js';
+import kumiko from './kumiko.js';
+import kintsugi from './kintsugi.js';
+import shibori from './shibori.js';
 
 // Organic generators first, then the geometric/sacred-geometry set. The UI
 // groups them by each algorithm's `category` (defaulting to "Organic").
 export const ALGORITHMS = [
-  flow, coral, turing, ridge, mycelium, pebbles, contours, suminagashi, voronoi,
-  flower, hexweave, mandala, truchet, phyllotaxis, moire,
+  flow, coral, turing, ridge, mycelium, pebbles, contours, suminagashi, voronoi, kintsugi, shibori,
+  flower, hexweave, mandala, truchet, phyllotaxis, moire, wagara, kumiko,
 ];
 
 export function algoById(id) {
