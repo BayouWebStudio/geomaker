@@ -4,12 +4,38 @@ Everything you paste into App Store Connect, plus the notes that pre-empt the
 likely review questions. GeoMaker collects no data, makes no network calls, has
 no accounts/IAP/ads/tracking — which clears most common rejection reasons.
 
-## App Privacy (nutrition label)
+## App Information (paste into App Store Connect)
 
-- **Data Not Collected.** Answer "No" to data collection across the board.
-- **Privacy Policy URL:** the hosted `PRIVACY.md`
-  (`https://github.com/BayouWebStudio/geomaker/blob/main/PRIVACY.md`, or your own
-  domain / GitHub Pages URL). It's also shown in-app under **About & privacy**.
+Shared with the Vesica Studio listing (same developer account).
+
+| Field | Value |
+|---|---|
+| App name | **GeoMaker** |
+| Subtitle | **Generative pattern studio** |
+| Developer / Seller | **Vesica Studio** (Wesche Tattoo) |
+| Bundle ID | `com.bayouwebstudio.geomaker` |
+| Primary category | Graphics & Design |
+| Secondary category | Entertainment |
+| Support URL | **https://vesica.studio** |
+| Marketing URL (optional) | **https://vesica.studio** |
+| Privacy Policy URL | **https://github.com/BayouWebStudio/geomaker/blob/main/PRIVACY.md** |
+| Support email (App Review contact) | **support@vesica.studio** |
+| Price | Free |
+
+(If you'd rather a branded privacy URL, host `PRIVACY.md` at e.g.
+`https://vesica.studio/geomaker-privacy.html` and use that instead — the in-app
+About panel already links the GitHub copy.)
+
+## App Privacy label — fill-in (Data Not Collected)
+
+In App Store Connect → **App Privacy**:
+
+1. "Do you or your third-party partners collect data from this app?" → **No, we
+   do not collect data from this app.**
+2. That's the whole flow — no data types, no tracking, no third-party SDKs to
+   declare. (Accurate: GeoMaker makes no network requests and has no analytics,
+   ads, accounts or tracking.)
+3. Set the **Privacy Policy URL** above (also shown in-app under About & privacy).
 
 ## Review notes (paste into "Notes for the reviewer")
 
@@ -64,10 +90,17 @@ patterns — shaped live with your fingertips and saved straight to Photos.
 
 ## Screenshots
 
-Use real in-app captures (App Store requires actual usage, not splash/title art).
-The repo's `screenshots/` folder has plenty — e.g. the mono Flower of Life,
-mandala, kintsugi, suminagashi, girih and Mandelbrot shots. Capture at the
-required device sizes (6.7" iPhone + 13" iPad) from the running app or simulator.
+Ready to upload — real in-app captures at the exact required sizes, in
+`screenshots/appstore/`:
+
+- **iPhone 6.7"** — `1290 × 2796` (PNG, no alpha): `iphone-1-flower`,
+  `iphone-2-suminagashi`, `iphone-3-mandala`, `iphone-4-kintsugi`,
+  `iphone-5-mandelbrot`.
+- **iPad 13"** — `2048 × 2732`: `ipad-1-mandala`, `ipad-2-girih`,
+  `ipad-3-truchet`.
+
+These show actual usage (controls + artwork), not splash/title art, per
+Guideline 2.3. Drag the matching set into each device size in App Store Connect.
 
 ## Pre-submit checklist
 

@@ -42,6 +42,7 @@ date.
 
 ## Contact
 
-Questions about privacy: open an issue at
-<https://github.com/BayouWebStudio/geomaker> or contact the developer through the
-app's App Store listing.
+GeoMaker is made by **Vesica Studio** (Wesche Tattoo). Questions about privacy:
+
+- Email: **support@vesica.studio**
+- Web: <https://vesica.studio>

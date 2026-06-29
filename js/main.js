@@ -43,7 +43,6 @@ const els = {
   aboutLink: document.getElementById('about-link'),
   about: document.getElementById('about'),
   aboutClose: document.getElementById('about-close'),
-  privacyLink: document.getElementById('privacy-link'),
 };
 
 // Optional public URL of the hosted web app. If set (e.g. a GitHub Pages /
@@ -542,13 +541,16 @@ function init() {
   els.aboutLink.addEventListener('click', () => (els.about.hidden = false));
   els.aboutClose.addEventListener('click', closeAbout);
   els.about.addEventListener('click', (e) => {
-    if (e.target === els.about) closeAbout(); // click the scrim to dismiss
-  });
-  els.privacyLink.addEventListener('click', (e) => {
-    // open the external policy in the system browser when running natively
-    if (isNative()) {
+    if (e.target === els.about) {
+      closeAbout(); // click the scrim to dismiss
+      return;
+    }
+    // open external http(s) links in the system browser when running natively
+    // (mailto: links are left alone so iOS opens Mail)
+    const ext = e.target.closest('a.ext-link');
+    if (ext && isNative()) {
       e.preventDefault();
-      window.open(els.privacyLink.href, '_blank');
+      window.open(ext.href, '_blank');
     }
   });
 
