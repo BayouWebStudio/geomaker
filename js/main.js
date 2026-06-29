@@ -40,7 +40,16 @@ const els = {
   save: document.getElementById('btn-save'),
   link: document.getElementById('btn-link'),
   toast: document.getElementById('toast'),
+  aboutLink: document.getElementById('about-link'),
+  about: document.getElementById('about'),
+  aboutClose: document.getElementById('about-close'),
+  privacyLink: document.getElementById('privacy-link'),
 };
+
+// Optional public URL of the hosted web app. If set (e.g. a GitHub Pages /
+// custom domain), the native Share action shares a real one-tap reproduce link;
+// otherwise it shares a readable "recipe" of the piece.
+const SHARE_BASE = '';
 
 const state = {
   algoId: ALGORITHMS[0].id,
@@ -166,6 +175,7 @@ canvas.addEventListener('pointerdown', (e) => {
   pointer = { lastX: x, lastY: y, dist: 0, id: e.pointerId };
   canvas.setPointerCapture?.(e.pointerId);
   playing = true; // resume the loop so interactive redraws are shown
+  haptic('LIGHT'); // tactile feedback for the touch interaction
   instance.onDown?.(x, y);
   e.preventDefault();
 });
@@ -352,6 +362,16 @@ function surprise() {
 // Capacitor injects window.Capacitor in the native app; undefined in a browser.
 const isNative = () => !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
 
+// subtle native haptic (no-op in a browser)
+function haptic(style = 'LIGHT') {
+  if (!isNative()) return;
+  try {
+    window.Capacitor.Plugins.Haptics?.impact({ style });
+  } catch {
+    /* optional */
+  }
+}
+
 function exportCanvas() {
   // returns the canvas to export, baking in grain/vignette if present
   if (state.look.grain <= 0 && state.look.vignette <= 0) return canvas;
@@ -400,13 +420,29 @@ async function savePng() {
 
 async function copyLink() {
   updateHash();
-  const url = location.href;
+  const algo = algoById(state.algoId);
+  // a human-readable "recipe" of the current piece
+  const recipe = `GeoMaker — ${algo.name} · seed "${state.seed}" · ${state.paletteName}`;
+
+  if (isNative()) {
+    // native: open the iOS share sheet. capacitor://… isn't a shareable URL, so
+    // share a real link only if a public web host is configured, else the recipe.
+    try {
+      const payload = { title: 'GeoMaker', text: recipe, dialogTitle: 'Share this pattern' };
+      if (SHARE_BASE) payload.url = SHARE_BASE + location.hash;
+      await window.Capacitor.Plugins.Share.share(payload);
+    } catch (err) {
+      if (!(err && /cancel/i.test(err.message || ''))) toast('Share failed');
+    }
+    return;
+  }
+
+  // browser: copy the reproducible URL to the clipboard
   try {
-    await navigator.clipboard.writeText(url);
+    await navigator.clipboard.writeText(location.href);
     toast('Link copied — same seed, same art');
   } catch {
-    // clipboard API needs a secure context; fall back to a visible prompt
-    window.prompt('Copy this link:', url);
+    window.prompt('Copy this link:', location.href);
   }
 }
 
@@ -502,10 +538,29 @@ function init() {
   els.hideUi.addEventListener('click', () => togglePanel(false));
   els.showUi.addEventListener('click', () => togglePanel(true));
 
+  const closeAbout = () => (els.about.hidden = true);
+  els.aboutLink.addEventListener('click', () => (els.about.hidden = false));
+  els.aboutClose.addEventListener('click', closeAbout);
+  els.about.addEventListener('click', (e) => {
+    if (e.target === els.about) closeAbout(); // click the scrim to dismiss
+  });
+  els.privacyLink.addEventListener('click', (e) => {
+    // open the external policy in the system browser when running natively
+    if (isNative()) {
+      e.preventDefault();
+      window.open(els.privacyLink.href, '_blank');
+    }
+  });
+
   document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeAbout();
+      return;
+    }
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     const tag = e.target.tagName;
     if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
+    if (!els.about.hidden) return; // ignore shortcuts while the about panel is open
     if (e.key === ' ') {
       e.preventDefault();
       surprise();

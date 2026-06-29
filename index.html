@@ -36,8 +36,8 @@
       <button id="btn-shuffle" class="primary" title="New seed + palette (Space)">🎲 Surprise me</button>
       <button id="btn-regen" title="Replay with current settings (R)">↺</button>
       <button id="btn-play" title="Pause (P)">⏸</button>
-      <button id="btn-save" title="Download PNG (S)">⬇</button>
-      <button id="btn-link" title="Copy share link (C)">🔗</button>
+      <button id="btn-save" title="Save / share image (S)">⬇</button>
+      <button id="btn-link" title="Share pattern (C)">🔗</button>
     </div>
 
     <section class="group">
@@ -72,12 +72,26 @@
     </section>
 
     <footer class="panel-footer">
-      <p>
+      <p class="kbd-hints">
         <kbd>space</kbd> surprise · <kbd>r</kbd> replay · <kbd>p</kbd> pause<br>
-        <kbd>s</kbd> save png · <kbd>c</kbd> copy link · <kbd>h</kbd> hide ui
+        <kbd>s</kbd> save png · <kbd>c</kbd> share · <kbd>h</kbd> hide ui
       </p>
+      <button id="about-link" class="link-btn" type="button">About &amp; privacy</button>
     </footer>
   </aside>
+
+  <div id="about" class="overlay" hidden>
+    <div class="overlay-card" role="dialog" aria-modal="true" aria-label="About GeoMaker">
+      <button id="about-close" class="overlay-close" type="button" title="Close">✕</button>
+      <h2>GEO<span>MAKER</span></h2>
+      <p class="about-tag">a generative-art pattern studio</p>
+      <p>Shape organic, geometric, fractal and traditional patterns with live sliders — every piece generated entirely on your device, then saved or shared whenever you like.</p>
+      <h3>Privacy</h3>
+      <p>GeoMaker collects <strong>no data</strong>. There are no accounts, no analytics, no ads and no tracking, and the app makes no network requests — everything runs offline on your device. Your last settings are stored locally so the app reopens where you left off. Images are only saved or shared when you choose to.</p>
+      <p><a id="privacy-link" href="https://github.com/BayouWebStudio/geomaker/blob/main/PRIVACY.md" target="_blank" rel="noopener">Full privacy policy ↗</a></p>
+      <p class="about-foot">No data collected · Works offline</p>
+    </div>
+  </div>
 
   <div id="toast" hidden></div>
 
