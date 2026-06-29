@@ -1,0 +1,17 @@
+{
+  "appId": "com.bayouwebstudio.geomaker",
+  "appName": "GeoMaker",
+  "webDir": "www",
+  "backgroundColor": "#0b0e14",
+  "ios": {
+    "contentInset": "never",
+    "backgroundColor": "#0b0e14"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 600,
+      "backgroundColor": "#0b0e14",
+      "showSpinner": false
+    }
+  }
+}

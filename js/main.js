@@ -349,26 +349,49 @@ function surprise() {
   regenerate();
 }
 
-function savePng() {
+// Capacitor injects window.Capacitor in the native app; undefined in a browser.
+const isNative = () => !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+
+function exportCanvas() {
+  // returns the canvas to export, baking in grain/vignette if present
+  if (state.look.grain <= 0 && state.look.vignette <= 0) return canvas;
+  const tmp = document.createElement('canvas');
+  tmp.width = canvas.width;
+  tmp.height = canvas.height;
+  const tctx = tmp.getContext('2d');
+  tctx.drawImage(canvas, 0, 0);
+  tctx.globalCompositeOperation = 'overlay';
+  tctx.drawImage(fxCanvas, 0, 0);
+  return tmp;
+}
+
+async function savePng() {
   const algo = algoById(state.algoId);
-  let source = canvas;
-  if (state.look.grain > 0 || state.look.vignette > 0) {
-    // bake the fx overlay into the export with the same blend the screen uses
-    const tmp = document.createElement('canvas');
-    tmp.width = canvas.width;
-    tmp.height = canvas.height;
-    const tctx = tmp.getContext('2d');
-    tctx.drawImage(canvas, 0, 0);
-    tctx.globalCompositeOperation = 'overlay';
-    tctx.drawImage(fxCanvas, 0, 0);
-    source = tmp;
+  const source = exportCanvas();
+  const safeSeed = state.seed.replace(/[^a-z0-9_-]+/gi, '-');
+  const filename = `geomaker-${algo.id}-${safeSeed}.png`;
+
+  if (isNative()) {
+    // native iOS: write to the cache, then open the share sheet (Save Image / Files / Messages…)
+    try {
+      const { Filesystem, Share } = window.Capacitor.Plugins;
+      const base64 = source.toDataURL('image/png').split(',')[1];
+      const { uri } = await Filesystem.writeFile({ path: filename, data: base64, directory: 'CACHE' });
+      await Share.share({ title: 'GeoMaker', text: filename, url: uri });
+      toast('Ready to save / share');
+    } catch (err) {
+      if (err && /cancel/i.test(err.message || '')) return; // user dismissed the sheet
+      toast('Export failed');
+    }
+    return;
   }
+
+  // browser: download the PNG
   source.toBlob((blob) => {
     if (!blob) return;
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    const safeSeed = state.seed.replace(/[^a-z0-9_-]+/gi, '-');
-    a.download = `geomaker-${algo.id}-${safeSeed}.png`;
+    a.download = filename;
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 5000);
   });
@@ -507,8 +530,25 @@ function init() {
     }, 250);
   });
 
+  setupNative();
   regenerate();
   requestAnimationFrame(tick);
+}
+
+// native-only setup (no-ops in a plain browser): light status-bar text over our
+// dark UI, status bar overlaying the web view, and hide the splash once ready
+function setupNative() {
+  if (!isNative()) return;
+  try {
+    const { StatusBar, SplashScreen } = window.Capacitor.Plugins;
+    StatusBar?.setStyle?.({ style: 'LIGHT' });
+    StatusBar?.setOverlaysWebView?.({ overlay: true });
+    SplashScreen?.hide?.();
+  } catch {
+    /* plugins optional */
+  }
+  // long-press on the canvas shouldn't pop the iOS callout menu
+  document.getElementById('art').addEventListener('contextmenu', (e) => e.preventDefault());
 }
 
 init();

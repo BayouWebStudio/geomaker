@@ -24,9 +24,21 @@ body {
   margin: 0;
   height: 100%;
   overflow: hidden;
+  overscroll-behavior: none; /* no rubber-band bounce in the iOS web view */
   background: #0b0e14;
   font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   color: var(--text);
+  /* native-app feel: no long-press callout, no text selection, no tap flash */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* the seed field still needs real text selection/editing */
+input[type='text'] {
+  -webkit-user-select: text;
+  user-select: text;
 }
 
 #art {
@@ -49,9 +61,10 @@ body {
 
 #panel {
   position: fixed;
-  top: 16px;
-  right: 16px;
-  bottom: 16px;
+  /* offset by the device safe areas so the panel clears the notch / home bar */
+  top: calc(16px + env(safe-area-inset-top));
+  right: calc(16px + env(safe-area-inset-right));
+  bottom: calc(16px + env(safe-area-inset-bottom));
   width: 304px;
   display: flex;
   flex-direction: column;
@@ -118,8 +131,8 @@ body {
 
 #show-ui {
   position: fixed;
-  top: 16px;
-  right: 16px;
+  top: calc(16px + env(safe-area-inset-top));
+  right: calc(16px + env(safe-area-inset-right));
   z-index: 10;
   width: 42px;
   height: 42px;
@@ -442,15 +455,17 @@ kbd {
 @media (max-width: 720px) {
   #panel {
     top: auto;
-    left: 10px;
-    right: 10px;
-    bottom: 10px;
+    left: calc(10px + env(safe-area-inset-left));
+    right: calc(10px + env(safe-area-inset-right));
+    bottom: calc(10px + env(safe-area-inset-bottom));
     width: auto;
     max-height: 48vh;
   }
 
   #show-ui {
     top: auto;
-    bottom: 16px;
+    left: auto;
+    bottom: calc(16px + env(safe-area-inset-bottom));
+    right: calc(16px + env(safe-area-inset-right));
   }
 }

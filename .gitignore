@@ -1,3 +1,7 @@
 node_modules/
 .DS_Store
 *.log
+
+# Capacitor: webDir is generated from source; iOS project is generated on a Mac
+www/
+ios/

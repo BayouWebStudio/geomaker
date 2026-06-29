@@ -5,7 +5,22 @@
   "type": "module",
   "scripts": {
     "start": "python3 -m http.server 8123",
-    "test": "node test/smoke.mjs"
+    "test": "node test/smoke.mjs",
+    "build:web": "node scripts/build-web.mjs",
+    "ios:add": "npm run build:web && cap add ios",
+    "sync": "npm run build:web && cap sync ios",
+    "ios:open": "cap open ios"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@capacitor/core": "^8.4.1",
+    "@capacitor/filesystem": "^8.1.2",
+    "@capacitor/ios": "^8.4.1",
+    "@capacitor/share": "^8.0.1",
+    "@capacitor/splash-screen": "^8.0.1",
+    "@capacitor/status-bar": "^8.0.2"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.4.1"
+  }
 }

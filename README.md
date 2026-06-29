@@ -15,6 +15,10 @@ npm start            # python3 -m http.server 8123
 
 Then open <http://localhost:8123>. (ES modules need http; opening `index.html` directly from disk won't work.)
 
+### iOS app
+
+GeoMaker is also wrapped as a native iOS app with [Capacitor](https://capacitorjs.com/) (a `WKWebView` shell + native share/save). The web app is iOS-aware (safe-area insets, no pinch-zoom, PNG export via the native share sheet). Build steps run on a Mac — see **[IOS.md](IOS.md)**. The same build doubles as an installable PWA (manifest + icons included).
+
 ## The algorithms
 
 The dropdown groups generators into **Organic** and **Geometric**. Every generator
