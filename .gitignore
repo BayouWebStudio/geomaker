@@ -2,6 +2,7 @@ node_modules/
 .DS_Store
 *.log
 
-# Capacitor: webDir is generated from source; iOS project is generated on a Mac
+# Capacitor: webDir is generated from source (re-create with `npm run build:web`).
+# The ios/ Xcode project IS committed; its own ios/.gitignore excludes build
+# artifacts (Pods, build/, DerivedData, copied web assets, generated config).
 www/
-ios/
