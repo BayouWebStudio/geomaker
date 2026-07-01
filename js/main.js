@@ -361,14 +361,10 @@ function surprise() {
 // Capacitor injects window.Capacitor in the native app; undefined in a browser.
 const isNative = () => !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
 
-// subtle native haptic (no-op in a browser)
+// subtle native haptic (no-op in a browser); .catch because impact() is async
 function haptic(style = 'LIGHT') {
   if (!isNative()) return;
-  try {
-    window.Capacitor.Plugins.Haptics?.impact({ style });
-  } catch {
-    /* optional */
-  }
+  window.Capacitor.Plugins.Haptics?.impact({ style }).catch(() => {});
 }
 
 function exportCanvas() {
@@ -593,17 +589,17 @@ function init() {
 }
 
 // native-only setup (no-ops in a plain browser): light status-bar text over our
-// dark UI, status bar overlaying the web view, and hide the splash once ready
+// dark UI, and hide the splash once the first frame is ready.
+// Note: StatusBar Style 'DARK' = "for dark backgrounds" (light text) — the
+// naming is inverted from what you'd guess. setOverlaysWebView is Android-only,
+// so it isn't called here; iOS full-bleed comes from viewport-fit=cover +
+// contentInset "never". Plugin calls are promises, so failures are .catch()ed
+// (a sync try/catch would miss them).
 function setupNative() {
   if (!isNative()) return;
-  try {
-    const { StatusBar, SplashScreen } = window.Capacitor.Plugins;
-    StatusBar?.setStyle?.({ style: 'LIGHT' });
-    StatusBar?.setOverlaysWebView?.({ overlay: true });
-    SplashScreen?.hide?.();
-  } catch {
-    /* plugins optional */
-  }
+  const { StatusBar, SplashScreen } = window.Capacitor.Plugins;
+  StatusBar?.setStyle?.({ style: 'DARK' }).catch(() => {});
+  SplashScreen?.hide?.().catch(() => {});
   // long-press on the canvas shouldn't pop the iOS callout menu
   document.getElementById('art').addEventListener('contextmenu', (e) => e.preventDefault());
 }
