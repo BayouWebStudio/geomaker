@@ -50,6 +50,22 @@ input[type='text'] {
   touch-action: none; /* let interactive generators handle drags without scrolling */
 }
 
+/* startup-failure notice (see the inline guard script in index.html) */
+#boot-error {
+  position: fixed;
+  top: calc(12px + env(safe-area-inset-top));
+  left: 12px;
+  right: 12px;
+  z-index: 99;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(120, 24, 32, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #fff;
+  font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  word-break: break-word;
+}
+
 /* post-process layer (grain + vignette), blended over the art */
 #fx {
   position: fixed;

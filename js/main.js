@@ -1000,6 +1000,7 @@ function init() {
   setupNative();
   regenerate();
   requestAnimationFrame(tick);
+  window.__geomakerReady = true; // boot finished — silence the startup-error overlay
 }
 
 // native-only setup (no-ops in a plain browser): light status-bar text over our
