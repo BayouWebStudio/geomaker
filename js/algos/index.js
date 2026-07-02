@@ -23,6 +23,11 @@ import textile from './textile.js';
 import mandelbrot from './mandelbrot.js';
 import lsystem from './lsystem.js';
 import apollonian from './apollonian.js';
+import stipple from './stipple.js';
+import chladni from './chladni.js';
+import harmonograph from './harmonograph.js';
+import sacred2 from './sacred2.js';
+import attractor from './attractor.js';
 import girih from './girih.js';
 import celtic from './celtic.js';
 
@@ -30,7 +35,8 @@ import celtic from './celtic.js';
 export const ALGORITHMS = [
   flow, coral, turing, ridge, mycelium, pebbles, contours, suminagashi, voronoi, kintsugi, shibori,
   flower, hexweave, mandala, truchet, phyllotaxis, moire, wagara, kumiko, automata, quasicrystal, textile,
-  girih, celtic, mandelbrot, lsystem, apollonian,
+  girih, celtic, stipple, chladni, harmonograph, sacred2,
+  mandelbrot, lsystem, apollonian, attractor,
 ];
 
 export function algoById(id) {
