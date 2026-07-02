@@ -12,6 +12,7 @@ export default {
   name: 'Suminagashi',
   category: 'Organic',
   interactive: true,
+  symmetry: true,
   hint: 'Tap to drop ink · drag to comb the surface',
   description: 'Japanese ink marbling — concentric drops sheared into flowing waves. Tap and drag to play.',
   params: [

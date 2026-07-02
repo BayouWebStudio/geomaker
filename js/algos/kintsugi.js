@@ -16,6 +16,7 @@ export default {
   name: 'Kintsugi (金継ぎ)',
   category: 'Organic',
   interactive: true,
+  symmetry: true,
   hint: 'Tap to crack a new shard · drag to paint a gold vein',
   description: 'Broken ceramic mended with gold. Tap to strike a fracture, drag to draw a gold seam across the glaze.',
   params: [
@@ -116,7 +117,7 @@ export default {
     computePolys();
 
     const veins = []; // user-drawn gold seams (arrays of [x,y])
-    let current = null;
+    const current = new Map(); // in-progress veins, keyed by mirror index
 
     function tracePoly(poly) {
       ctx.moveTo(poly[0][0], poly[0][1]);
@@ -170,7 +171,7 @@ export default {
       }
       // user-painted veins on top
       for (const v of veins) if (v.length > 1) strokeMetal(() => tracePolyline(v), P.seamWidth);
-      if (current && current.length > 1) strokeMetal(() => tracePolyline(current), P.seamWidth);
+      for (const v of current.values()) if (v.length > 1) strokeMetal(() => tracePolyline(v), P.seamWidth);
     }
 
     return {
@@ -181,25 +182,27 @@ export default {
         }
         return true;
       },
-      onDown(x, y) {
-        current = [[x, y]];
+      onDown(x, y, k = 0) {
+        current.set(k, [[x, y]]);
       },
-      onMove(x, y) {
-        if (current) {
-          current.push([x, y]);
+      onMove(x, y, dx, dy, k = 0) {
+        const v = current.get(k);
+        if (v) {
+          v.push([x, y]);
           dirty = true;
         }
       },
-      onUp(x, y, dist) {
+      onUp(x, y, dist, k = 0) {
         if (dist < 6) {
           if (sites.length < 400) {
             sites.push({ x, y, t: rng.random() });
             computePolys();
           }
-        } else if (current && current.length > 1) {
-          veins.push(current);
+        } else {
+          const v = current.get(k);
+          if (v && v.length > 1) veins.push(v);
         }
-        current = null;
+        current.delete(k);
         dirty = true;
       },
     };

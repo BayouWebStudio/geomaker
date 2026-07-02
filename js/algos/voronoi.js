@@ -10,6 +10,7 @@ export default {
   name: 'Voronoi Cells',
   category: 'Organic',
   interactive: true,
+  symmetry: true,
   hint: 'Tap to add a cell · drag to move the nearest one',
   description: 'A mosaic of nearest-neighbour cells — cracked glass, scales, stone. Tap to add cells, drag to shove them.',
   params: [
@@ -170,7 +171,7 @@ export default {
       return bi;
     }
 
-    let dragIdx = -1;
+    const dragIdx = new Map(); // dragged site per mirror index
     return {
       frame() {
         if (dirty) {
@@ -179,22 +180,23 @@ export default {
         }
         return true;
       },
-      onDown(x, y) {
-        dragIdx = sites.length ? nearest(x, y) : -1;
+      onDown(x, y, k = 0) {
+        if (sites.length) dragIdx.set(k, nearest(x, y));
       },
-      onMove(x, y) {
-        if (dragIdx >= 0) {
-          sites[dragIdx].x = x;
-          sites[dragIdx].y = y;
+      onMove(x, y, dx, dy, k = 0) {
+        const i = dragIdx.get(k);
+        if (i !== undefined) {
+          sites[i].x = x;
+          sites[i].y = y;
           dirty = true;
         }
       },
-      onUp(x, y, dist) {
+      onUp(x, y, dist, k = 0) {
         if (dist < 6 && sites.length < 400) {
           sites.push({ x, y, t: rng.random() });
           dirty = true;
         }
-        dragIdx = -1;
+        dragIdx.delete(k);
       },
     };
   },

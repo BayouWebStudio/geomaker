@@ -13,6 +13,7 @@ export default {
   name: 'Shibori (絞り)',
   category: 'Organic',
   interactive: true,
+  symmetry: true,
   hint: 'Kanoko: drag to print resist · Arashi/Itajime: drag to fold & angle',
   description: 'Indigo resist tie-dye — fawn-spot kanoko, pole-wrapped arashi, or folded itajime. Drag to dye.',
   params: [
@@ -177,11 +178,12 @@ export default {
         }
         return true;
       },
-      onDown(x, y) {
+      onDown(x, y, k = 0) {
         if (P.style === 'kanoko') dots.push([x, y]);
         dirty = true;
       },
-      onMove(x, y, dx, dy) {
+      onMove(x, y, dx, dy, k = 0) {
+        if (k && P.style !== 'kanoko') return; // fold/angle are global: apply once
         if (P.style === 'kanoko') dots.push([x, y]);
         else if (P.style === 'arashi') {
           angle += dx * 0.2;

@@ -14,6 +14,18 @@ const LOOK_SCHEMA = [
   { key: 'sat', label: 'Saturation', type: 'range', min: 0, max: 1.5, step: 0.05, value: 1 },
   { key: 'grain', label: 'Paper grain', type: 'range', min: 0, max: 0.6, step: 0.02, value: 0 },
   { key: 'vignette', label: 'Vignette', type: 'range', min: 0, max: 0.5, step: 0.02, value: 0 },
+  {
+    key: 'sym', label: 'Touch symmetry', type: 'select', value: 'off',
+    options: [
+      { value: 'off', label: 'off' },
+      { value: '2', label: '2-fold' },
+      { value: '3', label: '3-fold' },
+      { value: '4', label: '4-fold' },
+      { value: '6', label: '6-fold' },
+      { value: '8', label: '8-fold' },
+      { value: '12', label: '12-fold' },
+    ],
+  },
 ];
 
 const canvas = document.getElementById('art');
@@ -55,7 +67,7 @@ const state = {
   seed: randomSeedString(),
   paletteName: PALETTES[0].name,
   params: {}, // per-algorithm overrides: { algoId: { key: value } }
-  look: { sat: 1, grain: 0, vignette: 0 },
+  look: { sat: 1, grain: 0, vignette: 0, sym: 'off' },
 };
 
 function adjustedPalette() {
@@ -168,6 +180,33 @@ function canvasXY(e) {
   const r = canvas.getBoundingClientRect();
   return [e.clientX - r.left, e.clientY - r.top];
 }
+
+// kaleidoscope input: replay a pointer event N ways around the canvas centre.
+// Only algorithms that declare `symmetry: true` receive mirrored calls; the
+// mirror index k lets them keep per-mirror drag state.
+function forEachMirror(x, y, dx, dy, fn) {
+  const algo = algoById(state.algoId);
+  const N = algo.symmetry ? parseInt(state.look.sym, 10) || 1 : 1;
+  if (N <= 1) {
+    fn(x, y, dx, dy, 0);
+    return;
+  }
+  const cx = window.innerWidth / 2;
+  const cy = window.innerHeight / 2;
+  for (let k = 0; k < N; k++) {
+    const a = (k * 2 * Math.PI) / N;
+    const cos = Math.cos(a);
+    const sin = Math.sin(a);
+    fn(
+      cx + (x - cx) * cos - (y - cy) * sin,
+      cy + (x - cx) * sin + (y - cy) * cos,
+      dx * cos - dy * sin,
+      dx * sin + dy * cos,
+      k
+    );
+  }
+}
+
 canvas.addEventListener('pointerdown', (e) => {
   if (!instance || !(instance.onDown || instance.onMove || instance.onUp)) return;
   const [x, y] = canvasXY(e);
@@ -175,7 +214,7 @@ canvas.addEventListener('pointerdown', (e) => {
   canvas.setPointerCapture?.(e.pointerId);
   playing = true; // resume the loop so interactive redraws are shown
   haptic('LIGHT'); // tactile feedback for the touch interaction
-  instance.onDown?.(x, y);
+  if (instance.onDown) forEachMirror(x, y, 0, 0, (xk, yk, _dx, _dy, k) => instance.onDown(xk, yk, k));
   e.preventDefault();
 });
 canvas.addEventListener('pointermove', (e) => {
@@ -186,12 +225,13 @@ canvas.addEventListener('pointermove', (e) => {
   pointer.dist += Math.hypot(dx, dy);
   pointer.lastX = x;
   pointer.lastY = y;
-  instance.onMove?.(x, y, dx, dy);
+  if (instance.onMove) forEachMirror(x, y, dx, dy, (xk, yk, dxk, dyk, k) => instance.onMove(xk, yk, dxk, dyk, k));
 });
 function endPointer(e) {
   if (!pointer || !instance) return;
   const [x, y] = canvasXY(e);
-  instance.onUp?.(x, y, pointer.dist);
+  const dist = pointer.dist;
+  if (instance.onUp) forEachMirror(x, y, 0, 0, (xk, yk, _dx, _dy, k) => instance.onUp(xk, yk, dist, k));
   pointer = null;
 }
 canvas.addEventListener('pointerup', endPointer);
@@ -485,6 +525,10 @@ function init() {
       // saturation is baked into the strokes, so re-render the art
       renderSwatches();
       debounceRegen();
+    } else if (key === 'sym') {
+      // input-only setting: takes effect on the next touch, nothing to redraw
+      updateHash();
+      persist();
     } else {
       updateFx();
       updateHash();
