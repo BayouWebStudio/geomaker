@@ -34,11 +34,20 @@ import terrazzo from './terrazzo.js';
 import motif from './motif.js';
 import stripes from './stripes.js';
 import parquet from './parquet.js';
+import tessellation from './tessellation.js';
+import penrose from './penrose.js';
+import opart from './opart.js';
+import maze from './maze.js';
+import meander from './meander.js';
+import spiro from './spiro.js';
+import circuit from './circuit.js';
+import delaunay from './delaunay.js';
 
 // Grouped in the UI by each algorithm's `category` (defaulting to "Organic").
 export const ALGORITHMS = [
   flow, coral, turing, ridge, mycelium, pebbles, terrazzo, contours, suminagashi, voronoi, kintsugi, shibori,
-  flower, hexweave, mandala, truchet, motif, stripes, parquet, phyllotaxis, moire, wagara, kumiko, automata,
+  flower, hexweave, mandala, truchet, motif, stripes, parquet, tessellation, penrose, opart, maze, meander,
+  spiro, circuit, delaunay, phyllotaxis, moire, wagara, kumiko, automata,
   quasicrystal, textile, girih, celtic, stipple, chladni, harmonograph, sacred2,
   mandelbrot, lsystem, apollonian, attractor,
 ];
