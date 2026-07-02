@@ -63,13 +63,15 @@ patterns — shaped live with your fingertips and saved straight to Photos.
 
 **Description:**
 
-> GeoMaker turns simple sliders into endless original art. Pick from 32 pattern
+> GeoMaker turns simple sliders into endless original art. Pick from 36 pattern
 > engines, then move the levers and watch the artwork redraw instantly.
 >
 > • Organic — flow fields, reaction-diffusion, differential growth, Voronoi,
->   mycelium, ink marbling
+>   mycelium, ink marbling, terrazzo stone
 > • Geometric & sacred — flower of life, mandalas, hex tilings, truchet, Islamic
 >   girih, Celtic knots, phyllotaxis
+> • Wallpaper classics — polka-dot & motif wallpapers, stripes & chevrons,
+>   herringbone parquet, fish scales
 > • Traditional — Japanese wagara, kumiko lattices, kintsugi, indigo shibori
 > • Fractal — Mandelbrot & Julia, L-systems, the Apollonian gasket
 >
@@ -78,8 +80,9 @@ patterns — shaped live with your fingertips and saved straight to Photos.
 > the art you love is reproducible — and you can save it to Photos or share it
 > anytime.
 >
-> • 32 pattern engines, each with its own live controls
+> • 36 pattern engines, each with its own live controls
 > • 18 palettes, from black-and-grey graphite to neon — or desaturate any of them
+> • Line-weight control on every pattern, from hairline to bold marker
 > • Paper-grain and vignette finishing
 > • Works completely offline. No account, no ads, no tracking, no data collected.
 
@@ -118,7 +121,7 @@ Guideline 2.3. Drag the matching set into each device size in App Store Connect.
 
 - **4.2 minimum functionality:** on-device generation + touch interaction +
   native share/save + fully offline (see review notes).
-- **4.3 spam (wallpaper is a saturated category):** 32 distinct algorithms with
+- **4.3 spam (wallpaper is a saturated category):** 36 distinct algorithms with
   live parametric control is the "meaningfully different/improved" experience.
 - **5.1.1 privacy:** policy hosted + in-app; nothing collected.
 - **2.1 completeness:** no placeholder/debug content; every control works; the

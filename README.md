@@ -1,6 +1,6 @@
 # GeoMaker
 
-**A pattern studio in your browser.** Thirty-two generative-art algorithms — organic, geometric, fractal, traditional Japanese & world patterns, and hands-on interactive. The canvas is the whole app: a floating dock opens one sheet at a time — **Patterns** (a visual browser with live previews of every generator), **Style** (palette cards + finish: desaturate, paper grain, vignette) and **Tune** (the current pattern's levers) — with seeded randomness so every piece is reproducible, and one-tap PNG export. No build step, no dependencies — just open it.
+**A pattern studio in your browser.** Thirty-six generative-art algorithms — organic, geometric, fractal, traditional Japanese & world patterns, and hands-on interactive. The canvas is the whole app: a floating dock opens one sheet at a time — **Patterns** (a visual browser with live previews of every generator), **Style** (palette cards + finish: desaturate, paper grain, vignette) and **Tune** (the current pattern's levers) — with seeded randomness so every piece is reproducible, and one-tap PNG export. No build step, no dependencies — just open it.
 
 ![GeoMaker — Silk Flow](screenshots/hero.jpg)
 
@@ -39,7 +39,8 @@ links and PNG export.
 - **Turing Patterns** — Gray-Scott reaction-diffusion on a torus. Presets for coral / mitosis / worms / maze / solitons, plus raw feed & kill sliders, seeding styles and banded rendering.
 - **Ridgelines** — stacked noise-displaced ridge lines with occlusion fills, like mountain strata or a topographic record. Can animate with a slow drift.
 - **Mycelium** — branching, self-avoiding random walkers that wander, fork, taper and die when they touch existing growth: roots, lightning, fungal nets.
-- **Pebbles** — organic circle packing drawn as noise-wobbled flat blobs: terrazzo, river stones, cells. Includes an "offset ink" misprint mode and outline-only mode.
+- **Pebbles** — organic circle packing drawn as noise-wobbled flat blobs: river stones, cells. Includes an "offset ink" misprint mode and outline-only mode.
+- **Terrazzo** — café-floor stone: angular polygon chips dart-thrown into a grout field with a dusting of fine speckles; coverage, angularity, outline and three color treatments.
 - **Contours** — a topographic map of a fractal noise landscape: smooth elevation bands plus marching-squares iso-lines, optionally drifting.
 - **Dotwork** — weighted stippling: density-driven dot fields with an even-spacing pass, like hand-poked dotwork or engraving stipple.
 - **Voronoi Cells** *(interactive)* — a mosaic of nearest-neighbour cells (cracked glass, scales, stone) built by exact half-plane clipping, with Lloyd relaxation for evenness. Tap to add a cell, drag to move the nearest one.
@@ -58,6 +59,9 @@ links and PNG export.
 - **Hex Wallpaper** — hexagonal tiling with four motifs: solid honeycomb, nested concentric hexagons, isometric cubes (3-rhombi shading), and a six-petal rosette in every cell. Levers: motif, hex size, flat/pointy orientation, gap, nested count, color mode, per-tile color variation.
 - **Mandala** — kaleidoscopic rings of repeating motifs (petals, beads, diamonds, scallops…) with adjustable N-fold symmetry, ring count, mirroring and fill. The seed picks the per-ring motifs, so every seed is a different — but always symmetric — mandala.
 - **Truchet** — randomly oriented tiles that knit into flowing weaves, mazes and op-art. Styles: quarter-arcs, diagonals, two-tone triangles, plus an optional multi-scale subdivide for varied density.
+- **Motif Wallpaper** — the classic phone-wallpaper recipe: dots, rings, stars, sparkles, hearts, moons, crosses, triangles or diamonds (or a seeded mix) on square, brick, diamond or scatter layouts, with spacing, jitter, rotation play, size variation and filled/outline control.
+- **Stripes & Waves** — banded wallpaper: straight stripes, chevron zigzags, flowing wave ribbons or fish-scale rows, with direct band-width and fill-ratio levers, any angle, and a hand-wobble humanizer.
+- **Parquet & Herringbone** — wood-floor tilings: true interlocking herringbone, chevron columns, running-bond brick and basket weave, with plank proportion, grout width and per-plank tone variation (flat or rotated 45°).
 - **Phyllotaxis** *(interactive)* — a sunflower seed-head at the golden angle (Vogel's model). Drag ↔ to detune the divergence angle and watch the spiral arms reorganize, ↕ to change the spacing.
 - **Moiré** *(interactive)* — interference fringes from two overlaid gratings (concentric rings or parallel lines). Drag to move the second layer and shimmer the moiré.
 - **Islamic Girih** — Islamic geometric star patterns: interlocking {n/m} star polygons (8-, 10- or 12-point) on interleaved grids, forming the classic star-and-cross strapwork.
@@ -122,10 +126,11 @@ A family of traditional Japanese designs, from precise *wagara* tilings to inter
 Global post-processing in the Style sheet, applied to every algorithm:
 
 - **Saturation** (0–1.5) — pull any palette toward muted, print-like tones, or fully grayscale; the palette cards preview the adjustment live.
+- **Line weight** (0.3×–3×) — thicken or thin every stroke the current pattern draws, from hairline etching to bold marker, on all thirty-six generators.
 - **Paper grain** — seeded film-grain overlay for a printed/risograph texture.
 - **Vignette** — soft darkened edges for a vintage plate look.
 
-All three are baked into PNG exports and encoded in share links. Desaturated Botanic + grain + vignette, for example:
+All of these are baked into PNG exports and encoded in share links. Desaturated Botanic + grain + vignette, for example:
 
 ![Illustrative look](screenshots/illustrative.jpg)
 

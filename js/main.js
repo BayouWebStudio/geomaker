@@ -17,6 +17,7 @@ const STORAGE_KEY = 'geomaker-state-v1';
 // global post-processing controls, applied on top of every algorithm
 const LOOK_SCHEMA = [
   { key: 'sat', label: 'Saturation', type: 'range', min: 0, max: 1.5, step: 0.05, value: 1 },
+  { key: 'weight', label: 'Line weight', type: 'range', min: 0.3, max: 3, step: 0.05, value: 1 },
   { key: 'grain', label: 'Paper grain', type: 'range', min: 0, max: 0.6, step: 0.02, value: 0 },
   { key: 'vignette', label: 'Vignette', type: 'range', min: 0, max: 0.5, step: 0.02, value: 0 },
   {
@@ -94,8 +95,29 @@ const state = {
   seed: randomSeedString(),
   paletteName: PALETTES[0].name,
   params: {}, // per-algorithm overrides: { algoId: { key: value } }
-  look: { sat: 1, grain: 0, vignette: 0, sym: 'off' },
+  look: { sat: 1, weight: 1, grain: 0, vignette: 0, sym: 'off' },
 };
+
+// "Line weight" lever: scale every stroke width the generators set, without
+// touching any generator code. Shadows lineWidth on the context instance with
+// a scaling accessor — generators read back the value they set, while the
+// real (prototype) accessor underneath receives the scaled width.
+const nativeLineWidth = Object.getOwnPropertyDescriptor(CanvasRenderingContext2D.prototype, 'lineWidth');
+function applyLineWeight(context, mul) {
+  if (mul === 1) {
+    delete context.lineWidth; // fall back to the untouched prototype accessor
+    return;
+  }
+  let logical = nativeLineWidth.get.call(context);
+  Object.defineProperty(context, 'lineWidth', {
+    configurable: true,
+    get: () => logical,
+    set(v) {
+      logical = v;
+      nativeLineWidth.set.call(context, v * mul);
+    },
+  });
+}
 
 function adjustedPalette() {
   const base = getPalette(state.paletteName);
@@ -191,6 +213,7 @@ function regenerate() {
   const noise = createNoise(rng);
   ctx.fillStyle = palette.bg;
   ctx.fillRect(0, 0, w, h);
+  applyLineWeight(ctx, state.look.weight);
   instance = algo.create({ ctx, width: w, height: h, rng, noise, palette, params: currentParams(algo) });
   finished = false;
   playing = true;
@@ -393,6 +416,9 @@ function rebuildLookControls() {
       // saturation is baked into the strokes, so re-render the art
       updatePaletteStripes();
       debounceRegen();
+    } else if (key === 'weight') {
+      // stroke thickness is baked into the drawing, so re-render too
+      debounceRegen();
     } else if (key === 'sym') {
       // input-only setting: takes effect on the next touch, nothing to redraw
       updateHash();
@@ -494,6 +520,7 @@ function renderThumb(algo, cv) {
   tctx.setTransform(1, 0, 0, 1, 0, 0);
   tctx.fillStyle = palette.bg;
   tctx.fillRect(0, 0, w, h);
+  applyLineWeight(tctx, state.look.weight);
   try {
     const inst = algo.create({ ctx: tctx, width: w, height: h, rng, noise, palette, params: schemaDefaults(algo) });
     for (let i = 0; i < 34; i++) if (inst.frame() === false) break;
@@ -556,7 +583,7 @@ function buildPatternDom() {
 
 function buildThumbs() {
   buildPatternDom();
-  const sig = state.paletteName + '|' + state.look.sat;
+  const sig = state.paletteName + '|' + state.look.sat + '|' + state.look.weight;
   if (thumbSignature === sig) return;
   thumbSignature = sig;
   // render one preview per animation frame so the sheet never janks; a new run
