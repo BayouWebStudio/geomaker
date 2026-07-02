@@ -1,6 +1,6 @@
 # GeoMaker
 
-**A pattern studio in your browser.** Thirty-two generative-art algorithms — organic, geometric, fractal, traditional Japanese & world patterns, and hands-on interactive — a panel full of levers, global look controls (desaturate, paper grain, vignette), seeded randomness so every piece is reproducible, and one-click PNG export. No build step, no dependencies — just open it.
+**A pattern studio in your browser.** Thirty-two generative-art algorithms — organic, geometric, fractal, traditional Japanese & world patterns, and hands-on interactive. The canvas is the whole app: a floating dock opens one sheet at a time — **Patterns** (a visual browser with live previews of every generator), **Style** (palette cards + finish: desaturate, paper grain, vignette) and **Tune** (the current pattern's levers) — with seeded randomness so every piece is reproducible, and one-tap PNG export. No build step, no dependencies — just open it.
 
 ![GeoMaker — Silk Flow](screenshots/hero.jpg)
 
@@ -21,8 +21,10 @@ GeoMaker is also wrapped as a native iOS app with [Capacitor](https://capacitorj
 
 ## The algorithms
 
-The dropdown groups generators into **Organic** and **Geometric**. Every generator
-shares the same machinery — seed, palette, Look controls, share links and PNG export.
+The **Patterns** sheet shows every generator as a live preview thumbnail (rendered
+in your current palette), filterable by **Organic / Geometric / Fractal / Saved**.
+Every generator shares the same machinery — seed, palette, finish controls, share
+links and PNG export.
 
 ### Organic
 
@@ -94,11 +96,11 @@ Six generators respond to the pointer — drag right on the canvas (mouse or tou
 - **Phyllotaxis** — drag to detune the angle / spacing.
 - **Moiré** — drag to move the second grating.
 
-**Touch symmetry (kaleidoscope input):** the Look panel has a symmetry control (2- to 12-fold) that replays your touch around the canvas centre — one drag combs the marbling in six places at once; one tap strikes six mirrored kintsugi fractures. Works on Suminagashi, Kintsugi, Voronoi and Shibori.
+**Touch symmetry (kaleidoscope input):** the Style sheet has a symmetry control (2× to 12×) that replays your touch around the canvas centre — one drag combs the marbling in six places at once; one tap strikes six mirrored kintsugi fractures. Works on Suminagashi, Kintsugi, Voronoi and Shibori.
 
-**Browse & favorites:** the ⊞ button (or `g`) opens a visual gallery of every pattern as live thumbnails in your current palette; ♥ (or `f`) saves the current piece — seed, palette and every slider — to a local favorites shelf you can reload anytime.
+**Favorites:** ♥ in the top bar (or `f`) saves the current piece — seed, palette and every slider — to the **Saved** shelf inside the Patterns sheet, reloadable anytime.
 
-A `✦` hint appears in the panel whenever the selected generator is interactive. (Interactions are live and ephemeral — they aren't captured in the share link, which reproduces the seeded starting state.)
+Interactive generators carry a `✦ touch` badge on their preview card, and the Tune sheet shows a hint for the current one. (Interactions are live and ephemeral — they aren't captured in the share link, which reproduces the seeded starting state.)
 
 ## Japanese patterns (和柄)
 
@@ -115,11 +117,11 @@ A family of traditional Japanese designs, from precise *wagara* tilings to inter
 - **Kintsugi (金継ぎ)** *(interactive)* — broken ceramic mended with metal. Voronoi shards filled as glaze, their seams stroked as gold/silver/copper veins. Tap to strike a new fracture, drag to paint a vein across the surface.
 - **Shibori (絞り)** *(interactive)* — indigo resist tie-dye: *kanoko* fawn-spots, *arashi* pole-wrap diagonals, *itajime* folded-clamp grid, all with soft dye-bleed edges. Drag to print resist or set the fold.
 
-## The Look panel (make it illustrative)
+## Finish (make it illustrative)
 
-Global post-processing that applies to every algorithm:
+Global post-processing in the Style sheet, applied to every algorithm:
 
-- **Saturation** (0–1.5) — pull any palette toward muted, print-like tones, or fully grayscale; swatches preview the adjustment live.
+- **Saturation** (0–1.5) — pull any palette toward muted, print-like tones, or fully grayscale; the palette cards preview the adjustment live.
 - **Paper grain** — seeded film-grain overlay for a printed/risograph texture.
 - **Vignette** — soft darkened edges for a vintage plate look.
 
@@ -129,14 +131,16 @@ All three are baked into PNG exports and encoded in share links. Desaturated Bot
 
 ## Controls
 
+The dock (bottom) is the whole navigation: **Patterns · Style · [dice] · Tune · Save**.
+Sheets open over the live canvas, so everything you change redraws behind them.
+
+- **Patterns** (g) — the visual browser: every generator as a preview card, plus your Saved pieces.
+- **Style** — palette cards + the Finish sliders. 18 curated palettes; opens on monochrome **Graphite**, with **Noir**, **Silver**, **Slate**, **Ink** and **Chalk** all black/grey and colour palettes (Abyss, Ember, Riso Pop, Neon Garden…) one tap away. The **Saturation** lever also turns *any* palette fully grayscale.
+- **Dice** (space) — surprise me: new seed + random palette.
+- **Tune** — the current pattern's seed and levers, live; plus **Redraw** (r), **Pause/Resume** (p) and **Copy link** (c) — a URL that encodes algorithm, seed, palette and every slider, so a link reproduces the exact piece.
+- **Save** (s) — the canvas as a PNG at full device resolution (native share sheet on iOS).
 - **Seed** — every artwork is deterministic. Same seed + same settings = same art. Type anything, or roll the dice.
-- **Palettes** — 18 curated palettes. Opens on monochrome **Graphite**; **Noir**, **Silver**, **Slate**, **Ink** and **Chalk** are all black/grey, with colour palettes (Abyss, Ember, Riso Pop, Neon Garden…) one click away. The **Saturation** lever (below) also turns *any* palette fully grayscale.
-- **Tuning** — every algorithm exposes its parameters as live sliders/selects; changes re-render immediately.
-- **🎲 Surprise me** (space) — new seed + random palette.
-- **⬇ Save** (s) — downloads the canvas as a PNG at full device resolution.
-- **🔗 Share** (c) — copies a URL that encodes algorithm, seed, palette and every slider, so a link reproduces the exact piece.
-- **⏸ / ▶** (p) — pause and resume the simulations; **↺** (r) replays the current piece.
-- **h** — hide the panel for a full-bleed view.
+- Top bar: **♥** favorite (f) · **⛶** hide the chrome for a full-bleed view (h) · **ⓘ** about.
 
 State also persists to `localStorage`, so reloading brings back your last session.
 

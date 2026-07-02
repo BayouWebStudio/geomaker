@@ -25,6 +25,23 @@ export function buildControls(container, schema, values, onChange) {
       input.addEventListener('change', () => onChange(def.key, input.checked));
       row.append(input, el('span', 'check-label', def.label));
       container.append(row);
+    } else if (def.type === 'chips') {
+      // segmented row of tappable options (a friendlier select for short lists)
+      const row = el('div', 'control');
+      const wrap = el('div', 'chip-row');
+      for (const opt of def.options) {
+        const b = el('button', 'chip', opt.label);
+        b.type = 'button';
+        if (String(values[def.key]) === String(opt.value)) b.classList.add('active');
+        b.addEventListener('click', () => {
+          for (const c of wrap.children) c.classList.remove('active');
+          b.classList.add('active');
+          onChange(def.key, String(opt.value));
+        });
+        wrap.append(b);
+      }
+      row.append(el('label', 'control-label', def.label), wrap);
+      container.append(row);
     } else if (def.type === 'select') {
       const row = el('div', 'control');
       const select = el('select');

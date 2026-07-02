@@ -1,4 +1,9 @@
 // GeoMaker app shell: canvas lifecycle, render loop, state, sharing, export.
+//
+// UI model: the canvas is the app. A floating dock opens one bottom sheet at a
+// time — Patterns (visual previews of every generator), Style (palette cards +
+// finish), Tune (seed + the current pattern's controls) — so the artwork stays
+// visible and live while you change anything.
 
 import { createRng, randomSeedString } from './core/rng.js';
 import { createNoise } from './core/noise.js';
@@ -15,18 +20,21 @@ const LOOK_SCHEMA = [
   { key: 'grain', label: 'Paper grain', type: 'range', min: 0, max: 0.6, step: 0.02, value: 0 },
   { key: 'vignette', label: 'Vignette', type: 'range', min: 0, max: 0.5, step: 0.02, value: 0 },
   {
-    key: 'sym', label: 'Touch symmetry', type: 'select', value: 'off',
+    key: 'sym', label: 'Touch symmetry — mirrors your drags like a kaleidoscope', type: 'chips', value: 'off',
     options: [
       { value: 'off', label: 'off' },
-      { value: '2', label: '2-fold' },
-      { value: '3', label: '3-fold' },
-      { value: '4', label: '4-fold' },
-      { value: '6', label: '6-fold' },
-      { value: '8', label: '8-fold' },
-      { value: '12', label: '12-fold' },
+      { value: '2', label: '2×' },
+      { value: '3', label: '3×' },
+      { value: '4', label: '4×' },
+      { value: '6', label: '6×' },
+      { value: '8', label: '8×' },
+      { value: '12', label: '12×' },
     ],
   },
 ];
+
+const PANES = ['patterns', 'style', 'tune'];
+const CATEGORIES = ['All', 'Organic', 'Geometric', 'Fractal', 'Saved'];
 
 const canvas = document.getElementById('art');
 const ctx = canvas.getContext('2d');
@@ -34,34 +42,44 @@ const fxCanvas = document.getElementById('fx');
 const fxCtx = fxCanvas.getContext('2d');
 
 const els = {
-  panel: document.getElementById('panel'),
   showUi: document.getElementById('show-ui'),
-  hideUi: document.getElementById('hide-ui'),
-  algo: document.getElementById('algo-select'),
+  fav: document.getElementById('btn-fav'),
+  immerse: document.getElementById('btn-immerse'),
+  aboutBtn: document.getElementById('btn-about'),
+  sheet: document.getElementById('sheet'),
+  sheetGrab: document.getElementById('sheet-grab'),
+  sheetScroller: document.getElementById('sheet-scroller'),
+  panes: {
+    patterns: document.getElementById('pane-patterns'),
+    style: document.getElementById('pane-style'),
+    tune: document.getElementById('pane-tune'),
+  },
+  tabs: {
+    patterns: document.getElementById('tab-patterns'),
+    style: document.getElementById('tab-style'),
+    tune: document.getElementById('tab-tune'),
+  },
+  patternChips: document.getElementById('pattern-chips'),
+  patternGrid: document.getElementById('pattern-grid'),
+  favPane: document.getElementById('fav-pane'),
+  favGrid: document.getElementById('fav-grid'),
+  favEmpty: document.getElementById('fav-empty'),
+  paletteGrid: document.getElementById('palette-grid'),
+  look: document.getElementById('look-controls'),
+  params: document.getElementById('param-controls'),
+  tuneName: document.getElementById('tune-name'),
   algoDesc: document.getElementById('algo-desc'),
   algoHint: document.getElementById('algo-hint'),
   seed: document.getElementById('seed-input'),
   dice: document.getElementById('seed-dice'),
-  palette: document.getElementById('palette-select'),
-  swatches: document.getElementById('swatches'),
-  look: document.getElementById('look-controls'),
-  params: document.getElementById('param-controls'),
-  shuffle: document.getElementById('btn-shuffle'),
   regen: document.getElementById('btn-regen'),
   play: document.getElementById('btn-play'),
-  save: document.getElementById('btn-save'),
   link: document.getElementById('btn-link'),
+  shuffle: document.getElementById('btn-shuffle'),
+  save: document.getElementById('btn-save'),
   toast: document.getElementById('toast'),
-  aboutLink: document.getElementById('about-link'),
   about: document.getElementById('about'),
   aboutClose: document.getElementById('about-close'),
-  fav: document.getElementById('btn-fav'),
-  galleryOpen: document.getElementById('gallery-open'),
-  gallery: document.getElementById('gallery'),
-  galleryClose: document.getElementById('gallery-close'),
-  galleryGroups: document.getElementById('gallery-groups'),
-  favSection: document.getElementById('fav-section'),
-  favGrid: document.getElementById('fav-grid'),
 };
 
 const FAVS_KEY = 'geomaker-favs-v1';
@@ -159,8 +177,9 @@ function updateFx() {
 }
 
 function setPlayButton() {
-  els.play.textContent = finished ? '↺' : playing ? '⏸' : '▶';
-  els.play.title = finished ? 'Replay (P)' : playing ? 'Pause (P)' : 'Resume (P)';
+  const label = finished ? 'Replay' : playing ? 'Pause' : 'Resume';
+  els.play.textContent = label;
+  els.play.title = `${label} (P)`;
 }
 
 function regenerate() {
@@ -273,7 +292,7 @@ function updateHash() {
 
 function coerce(def, raw) {
   if (def.type === 'checkbox') return raw === 'true' || raw === '1';
-  if (def.type === 'select') {
+  if (def.type === 'select' || def.type === 'chips') {
     return def.options.some((o) => String(o.value) === raw) ? raw : def.value;
   }
   const v = parseFloat(raw);
@@ -361,19 +380,6 @@ function toast(msg) {
   }, 1800);
 }
 
-function renderSwatches() {
-  const palette = adjustedPalette();
-  els.swatches.textContent = '';
-  const chips = [palette.bg, ...palette.colors];
-  for (const c of chips) {
-    const chip = document.createElement('span');
-    chip.className = 'swatch';
-    chip.style.background = c;
-    chip.title = c;
-    els.swatches.append(chip);
-  }
-}
-
 let regenTimer = 0;
 function debounceRegen() {
   clearTimeout(regenTimer);
@@ -385,7 +391,7 @@ function rebuildLookControls() {
     state.look[key] = value;
     if (key === 'sat') {
       // saturation is baked into the strokes, so re-render the art
-      renderSwatches();
+      updatePaletteStripes();
       debounceRegen();
     } else if (key === 'sym') {
       // input-only setting: takes effect on the next touch, nothing to redraw
@@ -401,6 +407,7 @@ function rebuildLookControls() {
 
 function rebuildParamControls() {
   const algo = algoById(state.algoId);
+  els.tuneName.textContent = algo.name;
   els.algoDesc.textContent = algo.description;
   els.algoHint.textContent = algo.interactive && algo.hint ? `✦ ${algo.hint}` : '';
   els.algoHint.hidden = !(algo.interactive && algo.hint);
@@ -411,16 +418,77 @@ function rebuildParamControls() {
   });
 }
 
-// ---- pattern gallery & favorites ----
+// ---- bottom sheet + dock ----
 
-let thumbSignature = ''; // palette+saturation the thumbnails were built with
+let activePane = null;
+
+function openSheet(pane) {
+  if (activePane === pane) {
+    closeSheet();
+    return;
+  }
+  activePane = pane;
+  for (const p of PANES) {
+    els.panes[p].hidden = p !== pane;
+    els.tabs[p].classList.toggle('active', p === pane);
+  }
+  els.sheetScroller.scrollTop = 0; // each pane starts at its top
+  els.sheet.classList.add('open');
+  if (pane === 'patterns') {
+    buildThumbs();
+    renderFavs();
+    markActiveThumb();
+  }
+}
+
+function closeSheet() {
+  activePane = null;
+  els.sheet.classList.remove('open');
+  for (const p of PANES) els.tabs[p].classList.remove('active');
+}
+
+// swipe the grab handle down (or just tap it) to dismiss the sheet
+function wireSheetGrab() {
+  let drag = null;
+  els.sheetGrab.addEventListener('pointerdown', (e) => {
+    drag = { y0: e.clientY, moved: 0 };
+    els.sheetGrab.setPointerCapture?.(e.pointerId);
+    els.sheet.classList.add('dragging');
+    e.preventDefault();
+  });
+  els.sheetGrab.addEventListener('pointermove', (e) => {
+    if (!drag) return;
+    const dy = e.clientY - drag.y0;
+    drag.moved = Math.max(drag.moved, Math.abs(dy));
+    els.sheet.style.transform = `translateY(${Math.max(0, dy)}px)`;
+  });
+  const end = (e) => {
+    if (!drag) return;
+    const dy = e.clientY - drag.y0;
+    const tap = drag.moved < 6;
+    drag = null;
+    els.sheet.classList.remove('dragging');
+    els.sheet.style.transform = '';
+    if (tap || dy > 64) closeSheet();
+  };
+  els.sheetGrab.addEventListener('pointerup', end);
+  els.sheetGrab.addEventListener('pointercancel', end);
+}
+
+// ---- pattern browser (live previews of every generator) ----
+
+let activeCat = 'All';
+let gridBuilt = false;
+let thumbSignature = ''; // palette+saturation the previews were rendered with
+let thumbRun = 0;
+const thumbTargets = []; // [algo, canvas] pairs, filled once at DOM build
 
 function renderThumb(algo, cv) {
   const tctx = cv.getContext('2d');
   const w = cv.width;
   const h = cv.height;
   const palette = adjustedPalette();
-  // fixed per-algo seed so the gallery is stable across opens
+  // fixed per-algo seed so the previews are stable across opens
   const rng = createRng(`thumb::${algo.id}`);
   const noise = createNoise(rng);
   tctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -430,53 +498,73 @@ function renderThumb(algo, cv) {
     const inst = algo.create({ ctx: tctx, width: w, height: h, rng, noise, palette, params: schemaDefaults(algo) });
     for (let i = 0; i < 34; i++) if (inst.frame() === false) break;
   } catch {
-    /* a failed thumb shouldn't break the gallery */
+    /* a failed preview shouldn't break the browser */
   }
 }
 
-function buildThumbs() {
-  const sig = state.paletteName + '|' + state.look.sat;
-  if (thumbSignature === sig) return;
-  thumbSignature = sig;
-  els.galleryGroups.textContent = '';
+function buildPatternDom() {
+  if (gridBuilt) return;
+  gridBuilt = true;
   const groups = new Map();
   for (const algo of ALGORITHMS) {
     const cat = algo.category || 'Organic';
     if (!groups.has(cat)) groups.set(cat, []);
     groups.get(cat).push(algo);
   }
-  const queue = [];
   for (const [cat, list] of groups) {
-    const h3 = document.createElement('h3');
-    h3.textContent = cat;
-    const grid = document.createElement('div');
-    grid.className = 'thumb-grid';
+    const label = document.createElement('div');
+    label.className = 'grid-label';
+    label.dataset.cat = cat;
+    label.textContent = cat;
+    els.patternGrid.append(label);
     for (const algo of list) {
-      const card = document.createElement('div');
+      const card = document.createElement('button');
+      card.type = 'button';
       card.className = 'thumb';
       card.dataset.algo = algo.id;
-      if (algo.id === state.algoId) card.classList.add('active');
+      card.dataset.cat = cat;
       const cv = document.createElement('canvas');
       cv.width = 258;
       cv.height = 172;
+      card.append(cv);
+      if (algo.interactive) {
+        const badge = document.createElement('span');
+        badge.className = 'touch-badge';
+        badge.textContent = '✦ touch';
+        card.append(badge);
+      }
       const name = document.createElement('div');
       name.className = 'thumb-name';
-      name.textContent = (algo.interactive ? '✦ ' : '') + algo.name;
-      card.append(cv, name);
+      name.textContent = algo.name;
+      card.append(name);
       card.addEventListener('click', () => {
+        const fresh = state.algoId !== algo.id;
         state.algoId = algo.id;
-        els.algo.value = algo.id;
         rebuildParamControls();
-        closeGallery();
+        markActiveThumb();
         regenerate();
+        haptic('LIGHT');
+        // browsing stays open — the art redraws live behind the sheet
+        if (fresh && algo.interactive && algo.hint) toast(`✦ ${algo.hint}`);
       });
-      grid.append(card);
-      queue.push([algo, cv]);
+      els.patternGrid.append(card);
+      thumbTargets.push([algo, cv]);
     }
-    els.galleryGroups.append(h3, grid);
   }
-  // render one thumbnail per animation frame so the panel never janks
+  applyCatFilter();
+}
+
+function buildThumbs() {
+  buildPatternDom();
+  const sig = state.paletteName + '|' + state.look.sat;
+  if (thumbSignature === sig) return;
+  thumbSignature = sig;
+  // render one preview per animation frame so the sheet never janks; a new run
+  // (palette changed mid-render) cancels the previous queue
+  const run = ++thumbRun;
+  const queue = thumbTargets.slice();
   const step = () => {
+    if (run !== thumbRun) return;
     const item = queue.shift();
     if (!item) return;
     renderThumb(item[0], item[1]);
@@ -484,6 +572,102 @@ function buildThumbs() {
   };
   requestAnimationFrame(step);
 }
+
+function markActiveThumb() {
+  if (!gridBuilt) return;
+  for (const card of els.patternGrid.querySelectorAll('.thumb')) {
+    card.classList.toggle('active', card.dataset.algo === state.algoId);
+  }
+}
+
+function applyCatFilter() {
+  const saved = activeCat === 'Saved';
+  els.favPane.hidden = !saved;
+  els.patternGrid.hidden = saved;
+  if (!saved) {
+    for (const node of els.patternGrid.children) {
+      node.hidden = activeCat !== 'All' && node.dataset.cat !== activeCat;
+    }
+  }
+  for (const chip of els.patternChips.children) {
+    chip.classList.toggle('active', chip.dataset.cat === activeCat);
+  }
+}
+
+function buildCategoryChips() {
+  for (const cat of CATEGORIES) {
+    const chip = document.createElement('button');
+    chip.type = 'button';
+    chip.className = 'chip';
+    chip.dataset.cat = cat;
+    chip.textContent = cat;
+    chip.addEventListener('click', () => {
+      activeCat = cat;
+      applyCatFilter();
+      if (cat === 'Saved') renderFavs();
+    });
+    els.patternChips.append(chip);
+  }
+  applyCatFilter();
+}
+
+function updateFavChip() {
+  const chip = els.patternChips.querySelector('[data-cat="Saved"]');
+  if (!chip) return;
+  const n = loadFavs().length;
+  chip.textContent = n ? `Saved · ${n}` : 'Saved';
+}
+
+// ---- palette cards ----
+
+const paletteStripes = []; // [{ span, color }] so saturation can retint them live
+
+function buildPaletteGrid() {
+  els.paletteGrid.textContent = '';
+  paletteStripes.length = 0;
+  for (const p of PALETTES) {
+    const card = document.createElement('button');
+    card.type = 'button';
+    card.className = 'pal-card';
+    card.dataset.palette = p.name;
+    const stripes = document.createElement('div');
+    stripes.className = 'pal-stripes';
+    for (const c of [p.bg, ...p.colors]) {
+      const s = document.createElement('span');
+      s.style.background = c;
+      stripes.append(s);
+      paletteStripes.push({ span: s, color: c });
+    }
+    const name = document.createElement('span');
+    name.className = 'pal-name';
+    name.textContent = p.name;
+    card.append(stripes, name);
+    card.addEventListener('click', () => {
+      state.paletteName = p.name;
+      markActivePalette();
+      haptic('LIGHT');
+      regenerate();
+    });
+    els.paletteGrid.append(card);
+  }
+  updatePaletteStripes();
+  markActivePalette();
+}
+
+function markActivePalette() {
+  for (const card of els.paletteGrid.querySelectorAll('.pal-card')) {
+    card.classList.toggle('active', card.dataset.palette === state.paletteName);
+  }
+}
+
+function updatePaletteStripes() {
+  const sat = state.look.sat;
+  for (const { span, color } of paletteStripes) {
+    span.style.background = sat === 1 ? color : adjustSaturation(color, sat);
+  }
+}
+
+// ---- favorites ----
 
 function loadFavs() {
   try {
@@ -503,7 +687,7 @@ function saveFavs(favs) {
 
 function renderFavs() {
   const favs = loadFavs();
-  els.favSection.hidden = favs.length === 0;
+  els.favEmpty.hidden = favs.length > 0;
   els.favGrid.textContent = '';
   favs.forEach((fav, i) => {
     const card = document.createElement('div');
@@ -514,7 +698,6 @@ function renderFavs() {
     const name = document.createElement('div');
     name.className = 'thumb-name';
     const algo = algoById(fav.algoId);
-    name.innerHTML = '';
     name.textContent = algo.name;
     const sub = document.createElement('small');
     sub.textContent = `${fav.seed} · ${fav.paletteName}`;
@@ -534,11 +717,11 @@ function renderFavs() {
     card.addEventListener('click', () => {
       applySnapshot(fav);
       syncUiFromState();
-      closeGallery();
       regenerate();
     });
     els.favGrid.append(card);
   });
+  updateFavChip();
 }
 
 function addFavorite() {
@@ -559,27 +742,21 @@ function addFavorite() {
   });
   if (favs.length > 36) favs.length = 36;
   saveFavs(favs);
-  toast('Saved to favorites ♥');
-}
-
-function openGallery() {
-  els.gallery.hidden = false;
-  buildThumbs();
-  renderFavs();
-  for (const card of els.galleryGroups.querySelectorAll('.thumb')) {
-    card.classList.toggle('active', card.dataset.algo === state.algoId);
-  }
-}
-
-function closeGallery() {
-  els.gallery.hidden = true;
+  updateFavChip();
+  if (activePane === 'patterns') renderFavs();
+  haptic('MEDIUM');
+  els.fav.classList.remove('pop');
+  void els.fav.offsetWidth; // restart the animation
+  els.fav.classList.add('pop');
+  setTimeout(() => els.fav.classList.remove('pop'), 900);
+  toast('Saved — find it under Patterns → Saved');
 }
 
 function syncUiFromState() {
-  els.algo.value = state.algoId;
-  els.palette.value = state.paletteName;
   els.seed.value = state.seed;
-  renderSwatches();
+  markActivePalette();
+  updatePaletteStripes();
+  markActiveThumb();
   rebuildParamControls();
   rebuildLookControls();
 }
@@ -594,8 +771,7 @@ function surprise() {
   state.seed = randomSeedString();
   state.paletteName = PALETTES[Math.floor(Math.random() * PALETTES.length)].name;
   els.seed.value = state.seed;
-  els.palette.value = state.paletteName;
-  renderSwatches();
+  markActivePalette();
   regenerate();
 }
 
@@ -682,57 +858,31 @@ async function copyLink() {
   }
 }
 
-function togglePanel(show) {
-  const showing = show ?? els.panel.hidden;
-  els.panel.hidden = !showing;
+// immersive mode: hide every piece of chrome so the artwork stands alone
+function toggleChrome(show) {
+  const showing = show ?? document.body.classList.contains('immersive');
+  document.body.classList.toggle('immersive', !showing);
   els.showUi.hidden = showing;
+  if (!showing) closeSheet();
 }
 
 function init() {
   restore();
   loadFromHash();
 
-  // group the algorithm dropdown by category (Organic / Geometric)
-  const groups = new Map();
-  for (const algo of ALGORITHMS) {
-    const cat = algo.category || 'Organic';
-    if (!groups.has(cat)) groups.set(cat, []);
-    groups.get(cat).push(algo);
-  }
-  for (const [cat, list] of groups) {
-    const og = document.createElement('optgroup');
-    og.label = cat;
-    for (const algo of list) {
-      const o = document.createElement('option');
-      o.value = algo.id;
-      o.textContent = algo.name;
-      og.append(o);
-    }
-    els.algo.append(og);
-  }
-  for (const p of PALETTES) {
-    const o = document.createElement('option');
-    o.value = p.name;
-    o.textContent = p.name;
-    els.palette.append(o);
-  }
-  els.algo.value = state.algoId;
-  els.palette.value = state.paletteName;
+  buildCategoryChips();
+  buildPaletteGrid();
   els.seed.value = state.seed;
-  renderSwatches();
   rebuildLookControls();
   rebuildParamControls();
+  updateFavChip();
+  if (isNative()) els.link.textContent = 'Share link';
 
-  els.algo.addEventListener('change', () => {
-    state.algoId = els.algo.value;
-    rebuildParamControls();
-    regenerate();
-  });
-  els.palette.addEventListener('change', () => {
-    state.paletteName = els.palette.value;
-    renderSwatches();
-    regenerate();
-  });
+  for (const p of PANES) {
+    els.tabs[p].addEventListener('click', () => openSheet(p));
+  }
+  wireSheetGrab();
+
   const commitSeed = () => {
     const v = els.seed.value.trim();
     if (v && v !== state.seed) {
@@ -748,7 +898,10 @@ function init() {
     }
   });
   els.dice.addEventListener('click', newSeed);
-  els.shuffle.addEventListener('click', surprise);
+  els.shuffle.addEventListener('click', () => {
+    haptic('LIGHT');
+    surprise();
+  });
   els.regen.addEventListener('click', regenerate);
   els.play.addEventListener('click', () => {
     if (finished) {
@@ -760,18 +913,12 @@ function init() {
   });
   els.save.addEventListener('click', savePng);
   els.link.addEventListener('click', copyLink);
-  els.hideUi.addEventListener('click', () => togglePanel(false));
-  els.showUi.addEventListener('click', () => togglePanel(true));
-
   els.fav.addEventListener('click', addFavorite);
-  els.galleryOpen.addEventListener('click', openGallery);
-  els.galleryClose.addEventListener('click', closeGallery);
-  els.gallery.addEventListener('click', (e) => {
-    if (e.target === els.gallery) closeGallery(); // scrim click dismisses
-  });
+  els.immerse.addEventListener('click', () => toggleChrome(false));
+  els.showUi.addEventListener('click', () => toggleChrome(true));
 
   const closeAbout = () => (els.about.hidden = true);
-  els.aboutLink.addEventListener('click', () => (els.about.hidden = false));
+  els.aboutBtn.addEventListener('click', () => (els.about.hidden = false));
   els.aboutClose.addEventListener('click', closeAbout);
   els.about.addEventListener('click', (e) => {
     if (e.target === els.about) {
@@ -789,18 +936,14 @@ function init() {
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
-      closeAbout();
-      closeGallery();
+      if (!els.about.hidden) closeAbout();
+      else closeSheet();
       return;
     }
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     const tag = e.target.tagName;
     if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
     if (!els.about.hidden) return; // ignore shortcuts while the about panel is open
-    if (!els.gallery.hidden) {
-      if (e.key === 'g') closeGallery();
-      return;
-    }
     if (e.key === ' ') {
       e.preventDefault();
       surprise();
@@ -808,8 +951,8 @@ function init() {
     else if (e.key === 'p') els.play.click();
     else if (e.key === 's') savePng();
     else if (e.key === 'c') copyLink();
-    else if (e.key === 'h') togglePanel();
-    else if (e.key === 'g') openGallery();
+    else if (e.key === 'h') toggleChrome();
+    else if (e.key === 'g') openSheet('patterns');
     else if (e.key === 'f') addFavorite();
   });
 

@@ -21,92 +21,115 @@
   <canvas id="art"></canvas>
   <canvas id="fx" aria-hidden="true"></canvas>
 
-  <button id="show-ui" title="Show controls (H)" hidden>☰</button>
-
-  <aside id="panel">
-    <header class="panel-header">
-      <div>
-        <h1>GEO<span>MAKER</span></h1>
-        <p class="tagline">generative pattern studio</p>
-      </div>
-      <button id="hide-ui" title="Hide controls (H)">✕</button>
-    </header>
-
-    <div class="actions">
-      <button id="btn-shuffle" class="primary" title="New seed + palette (Space)">🎲 Surprise me</button>
-      <button id="btn-regen" title="Replay with current settings (R)">↺</button>
-      <button id="btn-play" title="Pause (P)">⏸</button>
-      <button id="btn-fav" title="Save to favorites (F)">♥</button>
-      <button id="btn-save" title="Save / share image (S)">⬇</button>
-      <button id="btn-link" title="Share pattern (C)">🔗</button>
+  <!-- top bar: brand + piece-level actions -->
+  <header id="topbar">
+    <div class="brand">GEO<span>MAKER</span></div>
+    <div class="top-actions">
+      <button id="btn-fav" title="Save to favorites (F)" aria-label="Save to favorites">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3C7.2 16.6 3.8 13.2 3.8 9.7 3.8 7.2 5.7 5.2 8.1 5.2c1.6 0 3.1 1 3.9 2.4.8-1.4 2.3-2.4 3.9-2.4 2.4 0 4.3 2 4.3 4.5 0 3.5-3.4 6.9-8.2 10.6z"/></svg>
+      </button>
+      <button id="btn-immerse" title="Hide controls (H)" aria-label="Hide controls">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4H4v5M15 4h5v5M9 20H4v-5M15 20h5v-5"/></svg>
+      </button>
+      <button id="btn-about" title="About &amp; privacy" aria-label="About and privacy">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M12 11v5"/><circle class="dot" cx="12" cy="8" r="1.1"/></svg>
+      </button>
     </div>
+  </header>
 
-    <section class="group">
-      <div class="control">
-        <label class="control-label" for="algo-select">Algorithm</label>
-        <div class="seed-wrap">
-          <select id="algo-select"></select>
-          <button id="gallery-open" title="Browse patterns (G)">⊞</button>
+  <!-- return button while the chrome is hidden -->
+  <button id="show-ui" title="Show controls (H)" aria-label="Show controls" hidden>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5h9.4M17.9 7.5H20M4 16.5h4.4M12.9 16.5H20"/><circle cx="15.6" cy="7.5" r="2.1"/><circle cx="10.6" cy="16.5" r="2.1"/></svg>
+  </button>
+
+  <!-- bottom sheet: one pane visible at a time -->
+  <div id="sheet" role="dialog" aria-label="Studio controls">
+    <button id="sheet-grab" type="button" aria-label="Close panel"><span></span></button>
+    <div id="sheet-scroller">
+
+      <section id="pane-patterns" class="pane" hidden>
+        <div id="pattern-chips" class="chip-row" role="tablist" aria-label="Pattern categories"></div>
+        <div id="fav-pane" hidden>
+          <div id="fav-grid" class="thumb-grid"></div>
+          <p id="fav-empty" class="empty-note" hidden>Nothing saved yet — tap the ♥ up top to keep a piece you love.</p>
         </div>
-      </div>
-      <p id="algo-desc" class="desc"></p>
-      <p id="algo-hint" class="hint" hidden></p>
-      <div class="control">
-        <label class="control-label" for="seed-input">Seed</label>
-        <div class="seed-wrap">
-          <input id="seed-input" type="text" spellcheck="false" autocomplete="off">
-          <button id="seed-dice" title="Random seed">🎲</button>
+        <div id="pattern-grid"></div>
+      </section>
+
+      <section id="pane-style" class="pane" hidden>
+        <h3 class="pane-title">Palette</h3>
+        <div id="palette-grid"></div>
+        <h3 class="pane-title">Finish</h3>
+        <div id="look-controls"></div>
+      </section>
+
+      <section id="pane-tune" class="pane" hidden>
+        <div class="tune-head">
+          <h3 id="tune-name"></h3>
+          <p id="algo-desc" class="desc"></p>
+          <p id="algo-hint" class="hint" hidden></p>
         </div>
-      </div>
-      <div class="control">
-        <label class="control-label" for="palette-select">Palette</label>
-        <select id="palette-select"></select>
-        <div id="swatches"></div>
-      </div>
-    </section>
+        <div class="control">
+          <label class="control-label" for="seed-input">Seed — same seed, same art</label>
+          <div class="seed-wrap">
+            <input id="seed-input" type="text" spellcheck="false" autocomplete="off">
+            <button id="seed-dice" title="Random seed" aria-label="Random seed">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3.5"/><circle class="pip" cx="8.6" cy="8.6" r="1.3"/><circle class="pip" cx="15.4" cy="8.6" r="1.3"/><circle class="pip" cx="12" cy="12" r="1.3"/><circle class="pip" cx="8.6" cy="15.4" r="1.3"/><circle class="pip" cx="15.4" cy="15.4" r="1.3"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="transport">
+          <button id="btn-regen" title="Redraw with current settings (R)">Redraw</button>
+          <button id="btn-play" title="Pause / resume (P)">Pause</button>
+          <button id="btn-link" title="Share this exact pattern (C)">Copy link</button>
+        </div>
+        <div id="param-controls"></div>
+      </section>
 
-    <section class="group">
-      <h2>Look</h2>
-      <div id="look-controls"></div>
-    </section>
-
-    <section class="group">
-      <h2>Tuning</h2>
-      <div id="param-controls"></div>
-    </section>
-
-    <footer class="panel-footer">
-      <p class="kbd-hints">
-        <kbd>space</kbd> surprise · <kbd>g</kbd> browse · <kbd>f</kbd> favorite · <kbd>r</kbd> replay<br>
-        <kbd>p</kbd> pause · <kbd>s</kbd> save png · <kbd>c</kbd> share · <kbd>h</kbd> hide ui
-      </p>
-      <button id="about-link" class="link-btn" type="button">About &amp; privacy</button>
-    </footer>
-  </aside>
-
-  <div id="gallery" class="overlay" hidden>
-    <div class="overlay-card gallery-card" role="dialog" aria-modal="true" aria-label="Browse patterns">
-      <button id="gallery-close" class="overlay-close" type="button" title="Close">✕</button>
-      <h2>BROWSE <span>PATTERNS</span></h2>
-      <div id="fav-section" hidden>
-        <h3>Saved</h3>
-        <div id="fav-grid" class="thumb-grid"></div>
-      </div>
-      <div id="gallery-groups"></div>
     </div>
   </div>
+
+  <!-- dock: main navigation -->
+  <nav id="dock" aria-label="Studio">
+    <button class="dock-tab" id="tab-patterns" data-pane="patterns" title="Browse patterns (G)">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7.2" height="7.2" rx="1.8"/><rect x="13.3" y="3.5" width="7.2" height="7.2" rx="1.8"/><rect x="3.5" y="13.3" width="7.2" height="7.2" rx="1.8"/><rect x="13.3" y="13.3" width="7.2" height="7.2" rx="1.8"/></svg>
+      <span>Patterns</span>
+    </button>
+    <button class="dock-tab" id="tab-style" data-pane="style" title="Palette &amp; finish">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.6S5.9 10.4 5.9 14.6a6.1 6.1 0 0 0 12.2 0C18.1 10.4 12 3.6 12 3.6z"/></svg>
+      <span>Style</span>
+    </button>
+    <button id="btn-shuffle" title="Surprise me — new seed &amp; palette (Space)" aria-label="Surprise me">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4"/><circle class="pip" cx="8.6" cy="8.6" r="1.5"/><circle class="pip" cx="15.4" cy="8.6" r="1.5"/><circle class="pip" cx="12" cy="12" r="1.5"/><circle class="pip" cx="8.6" cy="15.4" r="1.5"/><circle class="pip" cx="15.4" cy="15.4" r="1.5"/></svg>
+    </button>
+    <button class="dock-tab" id="tab-tune" data-pane="tune" title="Tune this pattern">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5h8.6M17.4 6.5H20M4 12h2.6M11.4 12H20M4 17.5h6.6M15.4 17.5H20"/><circle cx="15" cy="6.5" r="2.2"/><circle cx="9" cy="12" r="2.2"/><circle cx="13" cy="17.5" r="2.2"/></svg>
+      <span>Tune</span>
+    </button>
+    <button class="dock-tab" id="btn-save" title="Save / share image (S)">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14V3.6M8.4 6.8 12 3.2l3.6 3.6M7.5 10.5H5v10h14v-10h-2.5"/></svg>
+      <span>Save</span>
+    </button>
+  </nav>
 
   <div id="about" class="overlay" hidden>
     <div class="overlay-card" role="dialog" aria-modal="true" aria-label="About GeoMaker">
       <button id="about-close" class="overlay-close" type="button" title="Close">✕</button>
       <h2>GEO<span>MAKER</span></h2>
       <p class="about-tag">a generative-art pattern studio</p>
-      <p>Shape organic, geometric, fractal and traditional patterns with live sliders — every piece generated entirely on your device, then saved or shared whenever you like.</p>
+      <p>Shape organic, geometric, fractal and traditional patterns with live controls — every piece generated entirely on your device, then saved or shared whenever you like.</p>
       <h3>Privacy</h3>
       <p>GeoMaker collects <strong>no data</strong>. There are no accounts, no analytics, no ads and no tracking, and the app makes no network requests — everything runs offline on your device. Your last settings are stored locally so the app reopens where you left off. Images are only saved or shared when you choose to.</p>
       <p><a id="privacy-link" class="ext-link" href="https://github.com/BayouWebStudio/geomaker/blob/main/PRIVACY.md" target="_blank" rel="noopener">Full privacy policy ↗</a></p>
       <h3>Support</h3>
       <p><a href="mailto:support@vesica.studio">support@vesica.studio</a> · <a class="ext-link" href="https://vesica.studio" target="_blank" rel="noopener">vesica.studio</a></p>
+      <div class="kbd-hints">
+        <h3>Shortcuts</h3>
+        <p>
+          <kbd>space</kbd> surprise · <kbd>g</kbd> patterns · <kbd>f</kbd> favorite · <kbd>r</kbd> redraw<br>
+          <kbd>p</kbd> pause · <kbd>s</kbd> save png · <kbd>c</kbd> copy link · <kbd>h</kbd> hide ui
+        </p>
+      </div>
       <p class="about-foot">Made by Vesica Studio · No data collected · Works offline</p>
     </div>
   </div>
