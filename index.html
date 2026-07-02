@@ -36,6 +36,7 @@
       <button id="btn-shuffle" class="primary" title="New seed + palette (Space)">🎲 Surprise me</button>
       <button id="btn-regen" title="Replay with current settings (R)">↺</button>
       <button id="btn-play" title="Pause (P)">⏸</button>
+      <button id="btn-fav" title="Save to favorites (F)">♥</button>
       <button id="btn-save" title="Save / share image (S)">⬇</button>
       <button id="btn-link" title="Share pattern (C)">🔗</button>
     </div>
@@ -43,7 +44,10 @@
     <section class="group">
       <div class="control">
         <label class="control-label" for="algo-select">Algorithm</label>
-        <select id="algo-select"></select>
+        <div class="seed-wrap">
+          <select id="algo-select"></select>
+          <button id="gallery-open" title="Browse patterns (G)">⊞</button>
+        </div>
       </div>
       <p id="algo-desc" class="desc"></p>
       <p id="algo-hint" class="hint" hidden></p>
@@ -73,12 +77,24 @@
 
     <footer class="panel-footer">
       <p class="kbd-hints">
-        <kbd>space</kbd> surprise · <kbd>r</kbd> replay · <kbd>p</kbd> pause<br>
-        <kbd>s</kbd> save png · <kbd>c</kbd> share · <kbd>h</kbd> hide ui
+        <kbd>space</kbd> surprise · <kbd>g</kbd> browse · <kbd>f</kbd> favorite · <kbd>r</kbd> replay<br>
+        <kbd>p</kbd> pause · <kbd>s</kbd> save png · <kbd>c</kbd> share · <kbd>h</kbd> hide ui
       </p>
       <button id="about-link" class="link-btn" type="button">About &amp; privacy</button>
     </footer>
   </aside>
+
+  <div id="gallery" class="overlay" hidden>
+    <div class="overlay-card gallery-card" role="dialog" aria-modal="true" aria-label="Browse patterns">
+      <button id="gallery-close" class="overlay-close" type="button" title="Close">✕</button>
+      <h2>BROWSE <span>PATTERNS</span></h2>
+      <div id="fav-section" hidden>
+        <h3>Saved</h3>
+        <div id="fav-grid" class="thumb-grid"></div>
+      </div>
+      <div id="gallery-groups"></div>
+    </div>
+  </div>
 
   <div id="about" class="overlay" hidden>
     <div class="overlay-card" role="dialog" aria-modal="true" aria-label="About GeoMaker">

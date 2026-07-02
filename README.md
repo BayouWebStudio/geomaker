@@ -1,6 +1,6 @@
 # GeoMaker
 
-**A pattern studio in your browser.** Twenty-seven generative-art algorithms — organic, geometric, fractal, traditional Japanese & world patterns, and hands-on interactive — a panel full of levers, global look controls (desaturate, paper grain, vignette), seeded randomness so every piece is reproducible, and one-click PNG export. No build step, no dependencies — just open it.
+**A pattern studio in your browser.** Thirty-two generative-art algorithms — organic, geometric, fractal, traditional Japanese & world patterns, and hands-on interactive — a panel full of levers, global look controls (desaturate, paper grain, vignette), seeded randomness so every piece is reproducible, and one-click PNG export. No build step, no dependencies — just open it.
 
 ![GeoMaker — Silk Flow](screenshots/hero.jpg)
 
@@ -39,6 +39,7 @@ shares the same machinery — seed, palette, Look controls, share links and PNG 
 - **Mycelium** — branching, self-avoiding random walkers that wander, fork, taper and die when they touch existing growth: roots, lightning, fungal nets.
 - **Pebbles** — organic circle packing drawn as noise-wobbled flat blobs: terrazzo, river stones, cells. Includes an "offset ink" misprint mode and outline-only mode.
 - **Contours** — a topographic map of a fractal noise landscape: smooth elevation bands plus marching-squares iso-lines, optionally drifting.
+- **Dotwork** — weighted stippling: density-driven dot fields with an even-spacing pass, like hand-poked dotwork or engraving stipple.
 - **Voronoi Cells** *(interactive)* — a mosaic of nearest-neighbour cells (cracked glass, scales, stone) built by exact half-plane clipping, with Lloyd relaxation for evenness. Tap to add a cell, drag to move the nearest one.
 
 ### Geometric (sacred geometry & tilings)
@@ -61,6 +62,9 @@ shares the same machinery — seed, palette, Look controls, share links and PNG 
 - **Celtic Knot** — interlaced plaitwork: woven cords that pass over and under by parity, on a straight or diagonal weave.
 - **Cellular Automata** — elementary 1D rules drawn as a space-time triangle (Rule 30/90/110…), or a 2D cyclic automaton that self-organizes into spiral waves.
 - **Quasicrystal** *(interactive)* — many plane waves overlaid into a quasiperiodic interference lattice with N-fold symmetry. Drag to spin and phase-shift it.
+- **Cymatics** *(interactive)* — Chladni plate figures: sand settling on the nodal lines of a vibrating plate. Drag to sweep the two frequencies.
+- **Harmonograph** *(interactive)* — the damped-pendulum drawing machine (lateral/rotary), plus guilloché engraving rings; draws itself progressively like a pen. Drag to detune.
+- **Sacred Geometry II** — Metatron's Cube (13 circles, all 78 connections), the Vesica Piscis construction, and a recursively nested Merkaba.
 - **Textile Weave** — woven cloth: tartan plaid (crossing warp/weft threads), argyle diamonds with overstitch, or houndstooth check.
 
 ### Fractal
@@ -73,6 +77,7 @@ shares the same machinery — seed, palette, Look controls, share links and PNG 
 - **Mandelbrot / Julia** *(interactive)* — the escape-time fractal, smooth-shaded. Drag to pan the Mandelbrot, or switch to Julia and drag to morph the seed; zoom and iteration sliders go deep.
 - **L-system** *(interactive)* — Lindenmayer rewrite grammars drawn with a turtle: fractal plants, bushes, the Koch curve, the dragon curve and Sierpinski. Drag to bend the branching angle.
 - **Apollonian Gasket** — infinitely nested mutually-tangent circles, filled via the Descartes Circle Theorem.
+- **Strange Attractor** *(interactive)* — a chaotic map (Clifford / de Jong) iterated millions of times into smoke-like filaments. Drag to bend the parameters.
 
 ## Interactive patterns (tap & drag)
 
@@ -88,6 +93,10 @@ Six generators respond to the pointer — drag right on the canvas (mouse or tou
 - **Voronoi Cells** — tap to add a cell, drag to move the nearest.
 - **Phyllotaxis** — drag to detune the angle / spacing.
 - **Moiré** — drag to move the second grating.
+
+**Touch symmetry (kaleidoscope input):** the Look panel has a symmetry control (2- to 12-fold) that replays your touch around the canvas centre — one drag combs the marbling in six places at once; one tap strikes six mirrored kintsugi fractures. Works on Suminagashi, Kintsugi, Voronoi and Shibori.
+
+**Browse & favorites:** the ⊞ button (or `g`) opens a visual gallery of every pattern as live thumbnails in your current palette; ♥ (or `f`) saves the current piece — seed, palette and every slider — to a local favorites shelf you can reload anytime.
 
 A `✦` hint appears in the panel whenever the selected generator is interactive. (Interactions are live and ephemeral — they aren't captured in the share link, which reproduces the seeded starting state.)
 
@@ -143,6 +152,6 @@ js/algos/           one module per algorithm, registered in index.js
 test/smoke.mjs      node smoke tests for the DOM-free modules (npm test)
 ```
 
-Adding an algorithm = one new file in `js/algos/` exporting `{ id, name, description, params, create() }` (plus an optional `category` of `'Organic'` or `'Geometric'` for the dropdown grouping), and one import in `js/algos/index.js`. The `create()` function receives `{ ctx, width, height, rng, noise, palette, params }` and returns `{ frame() }`; return `false` from `frame()` when the piece is finished (static patterns just draw once and return `false`).
+Adding an algorithm = one new file in `js/algos/` exporting `{ id, name, description, params, create() }` (plus an optional `category` of `'Organic'`, `'Geometric'` or `'Fractal'` for grouping, and `symmetry: true` to receive kaleidoscope-mirrored pointer input), and one import in `js/algos/index.js`. The `create()` function receives `{ ctx, width, height, rng, noise, palette, params }` and returns `{ frame() }`; return `false` from `frame()` when the piece is finished (static patterns just draw once and return `false`).
 
 To make a generator **interactive**, set `interactive: true` and a `hint` string on the export, return `true` from `frame()` to stay live (redraw on a dirty flag so it's idle when nothing changes), and add any of `onDown(x, y)`, `onMove(x, y, dx, dy)`, `onUp(x, y, dragDist)` to the object returned by `create()`. The shell feeds it canvas-space pointer coordinates (mouse and touch).

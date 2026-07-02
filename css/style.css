@@ -150,8 +150,8 @@ input[type='text'] {
 
 .actions {
   display: grid;
-  grid-template-columns: 1fr repeat(4, 38px);
-  gap: 6px;
+  grid-template-columns: 1fr repeat(5, 34px);
+  gap: 5px;
 }
 
 .actions button {
@@ -273,8 +273,10 @@ select option {
   gap: 6px;
 }
 
-.seed-wrap input {
+.seed-wrap input,
+.seed-wrap select {
   flex: 1;
+  min-width: 0;
 }
 
 .seed-wrap button {
@@ -511,6 +513,95 @@ input[type='range']::-moz-range-thumb {
   margin-top: 16px;
   font-size: 10px;
   color: var(--muted);
+}
+
+/* ---------- pattern gallery & favorites ---------- */
+
+.gallery-card {
+  max-width: 780px;
+}
+
+.gallery-card h2 span {
+  color: var(--accent);
+}
+
+.gallery-card h3 {
+  margin: 20px 0 10px;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.thumb-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(136px, 1fr));
+  gap: 10px;
+}
+
+.thumb {
+  position: relative;
+  border: 1px solid var(--input-border);
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  background: #10131c;
+  transition: border-color 0.15s, transform 0.08s;
+}
+
+.thumb:hover {
+  border-color: var(--accent);
+}
+
+.thumb:active {
+  transform: scale(0.97);
+}
+
+.thumb.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.thumb canvas,
+.thumb img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+}
+
+.thumb-name {
+  padding: 6px 8px 7px;
+  font-size: 11px;
+  line-height: 1.25;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.thumb-name small {
+  display: block;
+  color: var(--muted);
+  font-size: 9.5px;
+}
+
+.thumb-del {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(8, 10, 14, 0.7);
+  color: var(--text);
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.thumb-del:hover {
+  background: rgba(200, 60, 60, 0.85);
 }
 
 .overlay-close {

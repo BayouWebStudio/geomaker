@@ -55,7 +55,16 @@ const els = {
   aboutLink: document.getElementById('about-link'),
   about: document.getElementById('about'),
   aboutClose: document.getElementById('about-close'),
+  fav: document.getElementById('btn-fav'),
+  galleryOpen: document.getElementById('gallery-open'),
+  gallery: document.getElementById('gallery'),
+  galleryClose: document.getElementById('gallery-close'),
+  galleryGroups: document.getElementById('gallery-groups'),
+  favSection: document.getElementById('fav-section'),
+  favGrid: document.getElementById('fav-grid'),
 };
+
+const FAVS_KEY = 'geomaker-favs-v1';
 
 // Optional public URL of the hosted web app. If set (e.g. a GitHub Pages /
 // custom domain), the native Share action shares a real one-tap reproduce link;
@@ -371,6 +380,25 @@ function debounceRegen() {
   regenTimer = setTimeout(regenerate, 160);
 }
 
+function rebuildLookControls() {
+  buildControls(els.look, LOOK_SCHEMA, state.look, (key, value) => {
+    state.look[key] = value;
+    if (key === 'sat') {
+      // saturation is baked into the strokes, so re-render the art
+      renderSwatches();
+      debounceRegen();
+    } else if (key === 'sym') {
+      // input-only setting: takes effect on the next touch, nothing to redraw
+      updateHash();
+      persist();
+    } else {
+      updateFx();
+      updateHash();
+      persist();
+    }
+  });
+}
+
 function rebuildParamControls() {
   const algo = algoById(state.algoId);
   els.algoDesc.textContent = algo.description;
@@ -381,6 +409,179 @@ function rebuildParamControls() {
     state.params[algo.id][key] = value;
     debounceRegen();
   });
+}
+
+// ---- pattern gallery & favorites ----
+
+let thumbSignature = ''; // palette+saturation the thumbnails were built with
+
+function renderThumb(algo, cv) {
+  const tctx = cv.getContext('2d');
+  const w = cv.width;
+  const h = cv.height;
+  const palette = adjustedPalette();
+  // fixed per-algo seed so the gallery is stable across opens
+  const rng = createRng(`thumb::${algo.id}`);
+  const noise = createNoise(rng);
+  tctx.setTransform(1, 0, 0, 1, 0, 0);
+  tctx.fillStyle = palette.bg;
+  tctx.fillRect(0, 0, w, h);
+  try {
+    const inst = algo.create({ ctx: tctx, width: w, height: h, rng, noise, palette, params: schemaDefaults(algo) });
+    for (let i = 0; i < 34; i++) if (inst.frame() === false) break;
+  } catch {
+    /* a failed thumb shouldn't break the gallery */
+  }
+}
+
+function buildThumbs() {
+  const sig = state.paletteName + '|' + state.look.sat;
+  if (thumbSignature === sig) return;
+  thumbSignature = sig;
+  els.galleryGroups.textContent = '';
+  const groups = new Map();
+  for (const algo of ALGORITHMS) {
+    const cat = algo.category || 'Organic';
+    if (!groups.has(cat)) groups.set(cat, []);
+    groups.get(cat).push(algo);
+  }
+  const queue = [];
+  for (const [cat, list] of groups) {
+    const h3 = document.createElement('h3');
+    h3.textContent = cat;
+    const grid = document.createElement('div');
+    grid.className = 'thumb-grid';
+    for (const algo of list) {
+      const card = document.createElement('div');
+      card.className = 'thumb';
+      card.dataset.algo = algo.id;
+      if (algo.id === state.algoId) card.classList.add('active');
+      const cv = document.createElement('canvas');
+      cv.width = 258;
+      cv.height = 172;
+      const name = document.createElement('div');
+      name.className = 'thumb-name';
+      name.textContent = (algo.interactive ? '✦ ' : '') + algo.name;
+      card.append(cv, name);
+      card.addEventListener('click', () => {
+        state.algoId = algo.id;
+        els.algo.value = algo.id;
+        rebuildParamControls();
+        closeGallery();
+        regenerate();
+      });
+      grid.append(card);
+      queue.push([algo, cv]);
+    }
+    els.galleryGroups.append(h3, grid);
+  }
+  // render one thumbnail per animation frame so the panel never janks
+  const step = () => {
+    const item = queue.shift();
+    if (!item) return;
+    renderThumb(item[0], item[1]);
+    requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+function loadFavs() {
+  try {
+    return JSON.parse(localStorage.getItem(FAVS_KEY)) || [];
+  } catch {
+    return [];
+  }
+}
+
+function saveFavs(favs) {
+  try {
+    localStorage.setItem(FAVS_KEY, JSON.stringify(favs));
+  } catch {
+    /* storage full/unavailable — favorites are best-effort */
+  }
+}
+
+function renderFavs() {
+  const favs = loadFavs();
+  els.favSection.hidden = favs.length === 0;
+  els.favGrid.textContent = '';
+  favs.forEach((fav, i) => {
+    const card = document.createElement('div');
+    card.className = 'thumb';
+    const img = document.createElement('img');
+    img.src = fav.img;
+    img.alt = '';
+    const name = document.createElement('div');
+    name.className = 'thumb-name';
+    const algo = algoById(fav.algoId);
+    name.innerHTML = '';
+    name.textContent = algo.name;
+    const sub = document.createElement('small');
+    sub.textContent = `${fav.seed} · ${fav.paletteName}`;
+    name.append(sub);
+    const del = document.createElement('button');
+    del.className = 'thumb-del';
+    del.textContent = '✕';
+    del.title = 'Remove';
+    del.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const cur = loadFavs();
+      cur.splice(i, 1);
+      saveFavs(cur);
+      renderFavs();
+    });
+    card.append(img, name, del);
+    card.addEventListener('click', () => {
+      applySnapshot(fav);
+      syncUiFromState();
+      closeGallery();
+      regenerate();
+    });
+    els.favGrid.append(card);
+  });
+}
+
+function addFavorite() {
+  const scale = 240 / canvas.width;
+  const thumb = document.createElement('canvas');
+  thumb.width = 240;
+  thumb.height = Math.max(1, Math.round(canvas.height * scale));
+  thumb.getContext('2d').drawImage(canvas, 0, 0, thumb.width, thumb.height);
+  const favs = loadFavs();
+  favs.unshift({
+    algoId: state.algoId,
+    seed: state.seed,
+    paletteName: state.paletteName,
+    params: { [state.algoId]: { ...(state.params[state.algoId] || {}) } },
+    look: { ...state.look },
+    img: thumb.toDataURL('image/jpeg', 0.72),
+    t: Date.now(),
+  });
+  if (favs.length > 36) favs.length = 36;
+  saveFavs(favs);
+  toast('Saved to favorites ♥');
+}
+
+function openGallery() {
+  els.gallery.hidden = false;
+  buildThumbs();
+  renderFavs();
+  for (const card of els.galleryGroups.querySelectorAll('.thumb')) {
+    card.classList.toggle('active', card.dataset.algo === state.algoId);
+  }
+}
+
+function closeGallery() {
+  els.gallery.hidden = true;
+}
+
+function syncUiFromState() {
+  els.algo.value = state.algoId;
+  els.palette.value = state.paletteName;
+  els.seed.value = state.seed;
+  renderSwatches();
+  rebuildParamControls();
+  rebuildLookControls();
 }
 
 function newSeed() {
@@ -519,22 +720,7 @@ function init() {
   els.palette.value = state.paletteName;
   els.seed.value = state.seed;
   renderSwatches();
-  buildControls(els.look, LOOK_SCHEMA, state.look, (key, value) => {
-    state.look[key] = value;
-    if (key === 'sat') {
-      // saturation is baked into the strokes, so re-render the art
-      renderSwatches();
-      debounceRegen();
-    } else if (key === 'sym') {
-      // input-only setting: takes effect on the next touch, nothing to redraw
-      updateHash();
-      persist();
-    } else {
-      updateFx();
-      updateHash();
-      persist();
-    }
-  });
+  rebuildLookControls();
   rebuildParamControls();
 
   els.algo.addEventListener('change', () => {
@@ -577,6 +763,13 @@ function init() {
   els.hideUi.addEventListener('click', () => togglePanel(false));
   els.showUi.addEventListener('click', () => togglePanel(true));
 
+  els.fav.addEventListener('click', addFavorite);
+  els.galleryOpen.addEventListener('click', openGallery);
+  els.galleryClose.addEventListener('click', closeGallery);
+  els.gallery.addEventListener('click', (e) => {
+    if (e.target === els.gallery) closeGallery(); // scrim click dismisses
+  });
+
   const closeAbout = () => (els.about.hidden = true);
   els.aboutLink.addEventListener('click', () => (els.about.hidden = false));
   els.aboutClose.addEventListener('click', closeAbout);
@@ -597,12 +790,17 @@ function init() {
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       closeAbout();
+      closeGallery();
       return;
     }
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     const tag = e.target.tagName;
     if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
     if (!els.about.hidden) return; // ignore shortcuts while the about panel is open
+    if (!els.gallery.hidden) {
+      if (e.key === 'g') closeGallery();
+      return;
+    }
     if (e.key === ' ') {
       e.preventDefault();
       surprise();
@@ -611,6 +809,8 @@ function init() {
     else if (e.key === 's') savePng();
     else if (e.key === 'c') copyLink();
     else if (e.key === 'h') togglePanel();
+    else if (e.key === 'g') openGallery();
+    else if (e.key === 'f') addFavorite();
   });
 
   let resizeTimer = 0;
