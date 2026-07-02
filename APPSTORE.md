@@ -63,7 +63,7 @@ patterns — shaped live with your fingertips and saved straight to Photos.
 
 **Description:**
 
-> GeoMaker turns simple sliders into endless original art. Pick from 44 pattern
+> GeoMaker turns simple sliders into endless original art. Pick from 49 pattern
 > engines, then move the levers and watch the artwork redraw instantly.
 >
 > • Organic — flow fields, reaction-diffusion, differential growth, Voronoi,
@@ -74,7 +74,9 @@ patterns — shaped live with your fingertips and saved straight to Photos.
 >   herringbone parquet, fish scales, low-poly mesh, circuit boards
 > • Mathematical — Penrose aperiodic tiling, Archimedean tessellations, op art,
 >   spirograph, mazes & the Hilbert curve, Greek key frets
-> • Traditional — Japanese wagara, kumiko lattices, kintsugi, indigo shibori
+> • Traditional — Japanese wagara, sayagata & asanoha lattices, bishamon
+>   armor, kumiko, kintsugi, indigo shibori, irezumi wave-and-cloud
+>   backgrounds, chrysanthemum & sakura florals
 > • Fractal — Mandelbrot & Julia, L-systems, the Apollonian gasket
 >
 > Shape it by touch: comb the marbling ink, fracture the kintsugi ceramic with a
@@ -82,7 +84,7 @@ patterns — shaped live with your fingertips and saved straight to Photos.
 > the art you love is reproducible — and you can save it to Photos or share it
 > anytime.
 >
-> • 44 pattern engines, each with its own live controls
+> • 49 pattern engines, each with its own live controls
 > • 18 palettes, from black-and-grey graphite to neon — or desaturate any of them
 > • Line-weight control on every pattern, from hairline to bold marker
 > • Paper-grain and vignette finishing
@@ -123,7 +125,7 @@ Guideline 2.3. Drag the matching set into each device size in App Store Connect.
 
 - **4.2 minimum functionality:** on-device generation + touch interaction +
   native share/save + fully offline (see review notes).
-- **4.3 spam (wallpaper is a saturated category):** 44 distinct algorithms with
+- **4.3 spam (wallpaper is a saturated category):** 49 distinct algorithms with
   live parametric control is the "meaningfully different/improved" experience.
 - **5.1.1 privacy:** policy hosted + in-app; nothing collected.
 - **2.1 completeness:** no placeholder/debug content; every control works; the
