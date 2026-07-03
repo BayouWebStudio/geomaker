@@ -25,6 +25,14 @@ you already have an Apple Developer account, so signing is just picking your Tea
   app, and falls back to a browser download otherwise.
 - iOS-aware web shell: `viewport-fit=cover`, no pinch/zoom, safe-area insets, no
   rubber-band scroll, light status bar.
+- **In-app purchase**: `ios/App/App/GeoPayPlugin.swift` — a ~100-line StoreKit 2
+  plugin (no third-party SDK) exposing `getProduct / purchase / restore /
+  isUnlocked` to the web app as `Capacitor.Plugins.GeoPay`. It's already wired
+  into the Xcode target. The product id it expects is
+  `com.bayouwebstudio.geomaker.pro` (see APPSTORE.md for the App Store Connect
+  setup, and `ios/App/Products.storekit` for local StoreKit testing in Xcode).
+  If `GeoPay` ever comes back undefined in JS, check that `GeoPayPlugin.swift`
+  is still a member of the App target (Target Membership in the File inspector).
 
 ## Build & run (on the Mac)
 

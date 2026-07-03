@@ -61,3 +61,7 @@ export const ALGORITHMS = [
 export function algoById(id) {
   return ALGORITHMS.find((a) => a.id === id) || ALGORITHMS[0];
 }
+
+// The free tier on iOS (everything is free on the open web build). One from
+// each mood — organic, interactive, sacred, radial — so the taste is real.
+export const FREE_ALGO_IDS = ['flow', 'suminagashi', 'flower', 'mandala'];

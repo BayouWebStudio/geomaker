@@ -144,6 +144,7 @@
       <p><a id="privacy-link" class="ext-link" href="https://github.com/BayouWebStudio/geomaker/blob/main/PRIVACY.md" target="_blank" rel="noopener">Full privacy policy ↗</a></p>
       <h3>Support</h3>
       <p><a href="mailto:support@vesica.studio">support@vesica.studio</a> · <a class="ext-link" href="https://vesica.studio" target="_blank" rel="noopener">vesica.studio</a></p>
+      <button id="about-restore" class="link-btn" type="button" hidden>Restore purchase</button>
       <div class="kbd-hints">
         <h3>Shortcuts</h3>
         <p>
@@ -152,6 +153,21 @@
         </p>
       </div>
       <p class="about-foot">Made by Vesica Studio · No data collected · Works offline</p>
+    </div>
+  </div>
+
+  <div id="paywall" class="overlay" hidden>
+    <div class="overlay-card paywall-card" role="dialog" aria-modal="true" aria-label="Unlock GeoMaker">
+      <button id="paywall-close" class="overlay-close" type="button" title="Close">✕</button>
+      <h2>UNLOCK <span>EVERYTHING</span></h2>
+      <p id="paywall-why" class="about-tag"></p>
+      <ul class="paywall-list">
+        <li>All <strong><span id="paywall-count">59</span> pattern engines</strong> — organic, geometric, Japanese, fractal</li>
+        <li>Every pattern we add in the future, included</li>
+        <li>One-time purchase — no subscription, no account, no ads</li>
+      </ul>
+      <button id="paywall-buy" class="paywall-buy" type="button">Unlock everything · $5.99</button>
+      <button id="paywall-restore" class="link-btn" type="button">Restore purchase</button>
     </div>
   </div>
 

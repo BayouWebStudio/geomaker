@@ -19,6 +19,8 @@ Then open <http://localhost:8123>. (ES modules need http; opening `index.html` d
 
 GeoMaker is also wrapped as a native iOS app with [Capacitor](https://capacitorjs.com/) (a `WKWebView` shell + native share/save). The web app is iOS-aware (safe-area insets, no pinch-zoom, PNG export via the native share sheet). Build steps run on a Mac — see **[IOS.md](IOS.md)**. The same build doubles as an installable PWA (manifest + icons included).
 
+The iOS build gates most patterns behind a **one-time StoreKit unlock** ($5.99, no subscription) with a small always-free tier (`FREE_ALGO_IDS` in `js/algos/index.js` — one line to change). The open web build has no gate.
+
 ## The algorithms
 
 The **Patterns** sheet shows every generator as a live preview thumbnail (rendered

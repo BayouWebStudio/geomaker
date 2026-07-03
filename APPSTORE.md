@@ -20,11 +20,37 @@ Shared with the Vesica Studio listing (same developer account).
 | Marketing URL (optional) | **https://vesica.studio** |
 | Privacy Policy URL | **https://github.com/BayouWebStudio/geomaker/blob/main/PRIVACY.md** |
 | Support email (App Review contact) | **support@vesica.studio** |
-| Price | Free |
+| Price | Free (with a one-time in-app purchase) |
+| In-App Purchase | **GeoMaker Pro Unlock** — non-consumable, `com.bayouwebstudio.geomaker.pro`, **$5.99** |
 
 (If you'd rather a branded privacy URL, host `PRIVACY.md` at e.g.
 `https://vesica.studio/geomaker-privacy.html` and use that instead — the in-app
 About panel already links the GitHub copy.)
+
+## In-App Purchase setup (App Store Connect)
+
+The app is free with 4 free patterns; everything else is behind a **one-time
+$5.99 unlock** (no subscription). Purchases run on StoreKit 2 directly via the
+in-app `GeoPayPlugin.swift` — no third-party SDK, no server.
+
+1. App Store Connect → your app → **Monetization → In-App Purchases** → **+**.
+2. Type: **Non-Consumable**.
+3. Reference Name: `GeoMaker Pro Unlock` · Product ID: `com.bayouwebstudio.geomaker.pro`
+   (must match exactly — it's hardcoded in `GeoPayPlugin.swift`).
+4. Price: **$5.99** (Apple maps the tier to other currencies automatically).
+5. Localization (en-US): Display Name `GeoMaker Pro`, Description
+   `Unlock all patterns, forever.`
+6. Add the **review screenshot** (a capture of the in-app unlock sheet) and
+   set the IAP's status to *Ready to Submit*.
+7. On the app version page, under **In-App Purchases**, attach it — the first
+   IAP must be submitted together with an app version.
+
+**Local testing without App Store Connect:** in Xcode, Product → Scheme →
+Edit Scheme… → Run → Options → **StoreKit Configuration** → select
+`Products.storekit` (already in `ios/App/`). Purchases then run against a
+local simulated store — buy, cancel and refund from Xcode's Transactions
+inspector. For end-to-end sandbox testing, sign into a **Sandbox Apple ID**
+(Users & Access → Sandbox Testers) on the device.
 
 ## App Privacy label — fill-in (Data Not Collected)
 
@@ -45,8 +71,12 @@ In App Store Connect → **App Privacy**:
 > several generators directly by touch (drag to comb the marbling ink, fracture
 > the kintsugi ceramic, bend the fractal, spin the quasicrystal). Finished pieces
 > are exported through the native iOS share sheet to Photos or Files. No demo
-> account is required; all features are available immediately. The app collects
-> and transmits no data.
+> account is required. Four patterns are free to use in full; the remaining
+> patterns are unlocked by a single non-consumable purchase ("GeoMaker Pro
+> Unlock", $5.99) processed entirely through StoreKit — the unlock sheet
+> (reached by tapping any locked pattern) contains the required **Restore
+> Purchase** button, which is also available under About. The app collects
+> and transmits no data; purchases are handled by the App Store.
 
 (The notes deliberately emphasise the native, on-device, interactive nature to
 address Guideline 4.2 minimum functionality, and the no-data/no-network nature
@@ -89,6 +119,9 @@ patterns — shaped live with your fingertips and saved straight to Photos.
 > • Line-weight control on every pattern, from hairline to bold marker
 > • Paper-grain and vignette finishing
 > • Works completely offline. No account, no ads, no tracking, no data collected.
+>
+> Four patterns are free, full-featured, forever. One single purchase unlocks
+> all the rest — no subscription.
 
 **Keywords (≤100 chars):**
 `generative,pattern,wallpaper,mandala,fractal,art,sacred geometry,marbling,kintsugi,truchet,design`

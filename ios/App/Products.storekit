@@ -1,0 +1,33 @@
+{
+  "identifier" : "F2B7C1A0-0000-4000-8000-A1B2C3D4E5F6",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "5.99",
+      "familyShareable" : false,
+      "internalID" : "GEOPRO000001",
+      "localizations" : [
+        {
+          "description" : "Unlock all patterns, forever.",
+          "displayName" : "GeoMaker Pro",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.bayouwebstudio.geomaker.pro",
+      "referenceName" : "GeoMaker Pro Unlock",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}

@@ -9,7 +9,7 @@ import { createRng, randomSeedString } from './core/rng.js';
 import { createNoise } from './core/noise.js';
 import { PALETTES, getPalette } from './core/palettes.js';
 import { adjustSaturation } from './core/util.js';
-import { ALGORITHMS, algoById } from './algos/index.js';
+import { ALGORITHMS, algoById, FREE_ALGO_IDS } from './algos/index.js';
 import { buildControls } from './ui.js';
 
 const STORAGE_KEY = 'geomaker-state-v1';
@@ -81,6 +81,13 @@ const els = {
   toast: document.getElementById('toast'),
   about: document.getElementById('about'),
   aboutClose: document.getElementById('about-close'),
+  aboutRestore: document.getElementById('about-restore'),
+  paywall: document.getElementById('paywall'),
+  paywallClose: document.getElementById('paywall-close'),
+  paywallWhy: document.getElementById('paywall-why'),
+  paywallCount: document.getElementById('paywall-count'),
+  paywallBuy: document.getElementById('paywall-buy'),
+  paywallRestore: document.getElementById('paywall-restore'),
 };
 
 const FAVS_KEY = 'geomaker-favs-v1';
@@ -560,11 +567,19 @@ function buildPatternDom() {
         badge.textContent = '✦ touch';
         card.append(badge);
       }
+      const lock = document.createElement('span');
+      lock.className = 'lock-badge';
+      lock.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="9.5" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>';
+      card.append(lock);
       const name = document.createElement('div');
       name.className = 'thumb-name';
       name.textContent = algo.name;
       card.append(name);
       card.addEventListener('click', () => {
+        if (isLockedAlgo(algo.id)) {
+          openPaywall(algo.name);
+          return;
+        }
         const fresh = state.algoId !== algo.id;
         state.algoId = algo.id;
         rebuildParamControls();
@@ -579,6 +594,7 @@ function buildPatternDom() {
     }
   }
   applyCatFilter();
+  updateLockUi();
 }
 
 function buildThumbs() {
@@ -635,6 +651,13 @@ function buildCategoryChips() {
     });
     els.patternChips.append(chip);
   }
+  // "unlock all" chip, shown only while the studio is gated (body.gated)
+  const pro = document.createElement('button');
+  pro.type = 'button';
+  pro.className = 'chip chip-pro';
+  pro.textContent = '✦ Unlock all';
+  pro.addEventListener('click', () => openPaywall());
+  els.patternChips.append(pro);
   applyCatFilter();
 }
 
@@ -742,6 +765,10 @@ function renderFavs() {
     });
     card.append(img, name, del);
     card.addEventListener('click', () => {
+      if (isLockedAlgo(fav.algoId)) {
+        openPaywall(algoById(fav.algoId).name);
+        return;
+      }
       applySnapshot(fav);
       syncUiFromState();
       regenerate();
@@ -804,6 +831,113 @@ function surprise() {
 
 // Capacitor injects window.Capacitor in the native app; undefined in a browser.
 const isNative = () => !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+
+// ---- pro unlock: a one-time purchase gates most patterns on iOS ----
+// The open web build stays fully unlocked; on iOS a small free tier
+// (FREE_ALGO_IDS) is playable and every other pattern shows a lock that
+// opens the unlock sheet. Entitlement truth lives in StoreKit (GeoPay
+// plugin); localStorage only caches it so the UI is right instantly.
+
+const PRO_KEY = 'geomaker-pro-v1';
+let entitled = false;
+try {
+  entitled = localStorage.getItem(PRO_KEY) === 'yes';
+} catch {
+  /* private mode — worst case the lock UI flashes until StoreKit answers */
+}
+
+const gated = () => isNative() && !entitled;
+const isLockedAlgo = (id) => gated() && !FREE_ALGO_IDS.includes(id);
+const geoPay = () => window.Capacitor?.Plugins?.GeoPay;
+
+function setEntitled(v) {
+  entitled = !!v;
+  try {
+    if (entitled) localStorage.setItem(PRO_KEY, 'yes');
+    else localStorage.removeItem(PRO_KEY);
+  } catch {
+    /* cache only */
+  }
+  updateLockUi();
+}
+
+// re-check StoreKit on every launch (covers refunds, family sharing, reinstalls)
+async function refreshEntitlement() {
+  if (!isNative() || !geoPay()) return;
+  try {
+    const { unlocked } = await geoPay().isUnlocked();
+    setEntitled(!!unlocked);
+  } catch {
+    /* store unreachable — keep the cached answer */
+  }
+}
+
+function updateLockUi() {
+  document.body.classList.toggle('gated', gated());
+  if (!gridBuilt) return;
+  for (const card of els.patternGrid.querySelectorAll('.thumb')) {
+    card.classList.toggle('locked', isLockedAlgo(card.dataset.algo));
+  }
+}
+
+let paywallPrice = '';
+async function openPaywall(patternName) {
+  els.paywall.hidden = false;
+  els.paywallWhy.textContent = patternName
+    ? `“${patternName}” is part of the full studio.`
+    : 'One purchase, the whole studio.';
+  els.paywallCount.textContent = ALGORITHMS.length;
+  if (isNative() && geoPay() && !paywallPrice) {
+    try {
+      const p = await geoPay().getProduct();
+      paywallPrice = p.price || '$5.99';
+    } catch {
+      paywallPrice = '$5.99';
+    }
+    els.paywallBuy.textContent = `Unlock everything · ${paywallPrice}`;
+  }
+}
+
+function closePaywall() {
+  els.paywall.hidden = true;
+}
+
+async function buyPro() {
+  if (!isNative() || !geoPay()) {
+    toast('Purchases live in the iOS app — the web build is open');
+    return;
+  }
+  try {
+    const res = await geoPay().purchase();
+    if (res.unlocked) {
+      setEntitled(true);
+      haptic('MEDIUM');
+      closePaywall();
+      toast('Everything unlocked — thank you ♥');
+    } else if (res.pending) {
+      toast('Purchase pending approval');
+    }
+    // user-cancelled: stay quiet
+  } catch {
+    toast('Purchase failed — nothing was charged');
+  }
+}
+
+async function restorePro() {
+  if (!isNative() || !geoPay()) return;
+  try {
+    const res = await geoPay().restore();
+    if (res.unlocked) {
+      setEntitled(true);
+      closePaywall();
+      toast('Purchase restored ♥');
+    } else {
+      toast('No previous purchase found');
+    }
+  } catch {
+    toast('Restore failed — try again');
+  }
+}
 
 // subtle native haptic (no-op in a browser); .catch because impact() is async
 function haptic(style = 'LIGHT') {
@@ -896,6 +1030,8 @@ function toggleChrome(show) {
 function init() {
   restore();
   loadFromHash();
+  // deep links / restored state can't smuggle in a locked pattern
+  if (isLockedAlgo(state.algoId)) state.algoId = FREE_ALGO_IDS[0];
 
   buildCategoryChips();
   buildPaletteGrid();
@@ -944,6 +1080,15 @@ function init() {
   els.immerse.addEventListener('click', () => toggleChrome(false));
   els.showUi.addEventListener('click', () => toggleChrome(true));
 
+  els.paywallClose.addEventListener('click', closePaywall);
+  els.paywallBuy.addEventListener('click', buyPro);
+  els.paywallRestore.addEventListener('click', restorePro);
+  els.paywall.addEventListener('click', (e) => {
+    if (e.target === els.paywall) closePaywall();
+  });
+  els.aboutRestore.hidden = !isNative();
+  els.aboutRestore.addEventListener('click', restorePro);
+
   const closeAbout = () => (els.about.hidden = true);
   els.aboutBtn.addEventListener('click', () => (els.about.hidden = false));
   els.aboutClose.addEventListener('click', closeAbout);
@@ -963,7 +1108,8 @@ function init() {
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
-      if (!els.about.hidden) closeAbout();
+      if (!els.paywall.hidden) closePaywall();
+      else if (!els.about.hidden) closeAbout();
       else closeSheet();
       return;
     }
@@ -998,6 +1144,8 @@ function init() {
   });
 
   setupNative();
+  updateLockUi();
+  refreshEntitlement(); // async — StoreKit is the truth, cache keeps UI instant
   regenerate();
   requestAnimationFrame(tick);
   window.__geomakerReady = true; // boot finished — silence the startup-error overlay
