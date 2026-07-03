@@ -5,36 +5,20 @@
 
 import { TAU, samplePalette, mixHex } from '../core/util.js';
 
-export default {
-  id: 'wagara2',
-  name: 'Wagara II (和柄)',
-  category: 'Geometric',
-  description: 'More classical Japanese patterns: Bishamon kikkō armor, pine-bark diamonds, rising steam, flower diamonds and thunder scrolls.',
-  params: [
-    {
-      key: 'style', label: 'Pattern', type: 'select', value: 'bishamon',
-      options: [
-        { value: 'bishamon', label: 'bishamon kikkō (armor)' },
-        { value: 'matsukawa', label: 'matsukawabishi (pine bark)' },
-        { value: 'tatewaku', label: 'tatewaku (rising steam)' },
-        { value: 'hanabishi', label: 'hanabishi (flower diamond)' },
-        { value: 'raimon', label: 'raimon (thunder scroll)' },
-      ],
-    },
-    { key: 'size', label: 'Scale', type: 'range', min: 14, max: 90, step: 2, value: 42 },
-    { key: 'lineWidth', label: 'Line width', type: 'range', min: 1, max: 10, step: 0.5, value: 2.5 },
-    { key: 'contrast', label: 'Fill contrast', type: 'range', min: 0, max: 1, step: 0.05, value: 0.5 },
-    {
-      key: 'colorMode', label: 'Color by', type: 'select', value: 'twotone',
-      options: [
-        { value: 'twotone', label: 'two-tone' },
-        { value: 'gradient', label: 'gradient' },
-        { value: 'ink', label: 'line only' },
-      ],
-    },
+const P_SIZE = { key: 'size', label: 'Scale', type: 'range', min: 14, max: 90, step: 2, value: 42 };
+const P_LINE = { key: 'lineWidth', label: 'Line width', type: 'range', min: 1, max: 10, step: 0.5, value: 2.5 };
+const P_CONTRAST = { key: 'contrast', label: 'Fill contrast', type: 'range', min: 0, max: 1, step: 0.05, value: 0.5 };
+const P_COLOR = {
+  key: 'colorMode', label: 'Color by', type: 'select', value: 'twotone',
+  options: [
+    { value: 'twotone', label: 'two-tone' },
+    { value: 'gradient', label: 'gradient' },
+    { value: 'ink', label: 'line only' },
   ],
+};
 
-  create({ ctx, width, height, rng, palette, params }) {
+function createEngine(style, { ctx, width, height, rng, palette, params }) {
+  {
     const P = params;
     const D = Math.hypot(width, height);
     const ink = samplePalette(palette.colors, 0.15);
@@ -249,14 +233,33 @@ export default {
         ctx.fillRect(0, 0, width, height);
         ctx.save();
         ctx.translate((width - D) / 2, (height - D) / 2);
-        if (P.style === 'bishamon') drawBishamon();
-        else if (P.style === 'matsukawa') drawMatsukawa();
-        else if (P.style === 'tatewaku') drawTatewaku();
-        else if (P.style === 'hanabishi') drawHanabishi();
+        if (style === 'bishamon') drawBishamon();
+        else if (style === 'matsukawa') drawMatsukawa();
+        else if (style === 'tatewaku') drawTatewaku();
+        else if (style === 'hanabishi') drawHanabishi();
         else drawRaimon();
         ctx.restore();
         return false;
       },
     };
+  }
+}
+
+const variant = (style, id, name, description, params) => ({
+  id,
+  name,
+  category: 'Geometric',
+  description,
+  params,
+  create(env) {
+    return createEngine(style, env);
   },
-};
+});
+
+export const WAGARA2_VARIANTS = [
+  variant('bishamon', 'bishamon', 'Bishamon Kikkō (毘沙門亀甲)', 'The armor of Bishamonten: three-hexagon trefoils interlocking edge to edge.', [P_SIZE, P_LINE, P_CONTRAST, P_COLOR]),
+  variant('matsukawa', 'matsukawa', 'Matsukawabishi (松皮菱)', 'Pine-bark diamonds: stepped lozenges stacked into a two-tone lattice.', [P_SIZE, P_LINE, P_CONTRAST, P_COLOR]),
+  variant('tatewaku', 'tatewaku', 'Tatewaku (立涌)', 'Rising steam: paired vertical waves that swell and pinch in alternation.', [P_SIZE, P_LINE, P_COLOR]),
+  variant('hanabishi', 'hanabishi', 'Hanabishi (花菱)', 'Flower diamonds: four curved petals blooming in a diamond lattice.', [P_SIZE, P_LINE, P_CONTRAST, P_COLOR]),
+  variant('raimon', 'raimon', 'Raimon (雷文)', 'Thunder scrolls: square spiral frets in alternating chirality.', [P_SIZE, P_LINE, P_COLOR]),
+];

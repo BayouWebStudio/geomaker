@@ -13,7 +13,7 @@ import mandala from './mandala.js';
 import truchet from './truchet.js';
 import phyllotaxis from './phyllotaxis.js';
 import moire from './moire.js';
-import wagara from './wagara.js';
+import { WAGARA_VARIANTS } from './wagara.js';
 import kumiko from './kumiko.js';
 import kintsugi from './kintsugi.js';
 import shibori from './shibori.js';
@@ -38,7 +38,7 @@ import tessellation from './tessellation.js';
 import penrose from './penrose.js';
 import sayagata from './sayagata.js';
 import asanoha from './asanoha.js';
-import wagara2 from './wagara2.js';
+import { WAGARA2_VARIANTS } from './wagara2.js';
 import irezumi from './irezumi.js';
 import kiku from './kiku.js';
 import opart from './opart.js';
@@ -52,7 +52,8 @@ import delaunay from './delaunay.js';
 export const ALGORITHMS = [
   flow, coral, turing, ridge, mycelium, pebbles, terrazzo, contours, suminagashi, voronoi, kintsugi, shibori,
   flower, hexweave, mandala, truchet, motif, stripes, parquet, tessellation, penrose, opart, maze, meander,
-  spiro, circuit, delaunay, phyllotaxis, moire, wagara, wagara2, sayagata, asanoha, kumiko, irezumi, kiku, automata,
+  spiro, circuit, delaunay, phyllotaxis, moire, ...WAGARA_VARIANTS, ...WAGARA2_VARIANTS,
+  sayagata, asanoha, kumiko, irezumi, kiku, automata,
   quasicrystal, textile, girih, celtic, stipple, chladni, harmonograph, sacred2,
   mandelbrot, lsystem, apollonian, attractor,
 ];

@@ -1,6 +1,6 @@
 # GeoMaker
 
-**A pattern studio in your browser.** Forty-nine generative-art algorithms — organic, geometric, fractal, traditional Japanese & world patterns, and hands-on interactive. The canvas is the whole app: a floating dock opens one sheet at a time — **Patterns** (a visual browser with live previews of every generator), **Style** (palette cards + finish: desaturate, paper grain, vignette) and **Tune** (the current pattern's levers) — with seeded randomness so every piece is reproducible, and one-tap PNG export. No build step, no dependencies — just open it.
+**A pattern studio in your browser.** Fifty-nine generative-art algorithms — organic, geometric, fractal, traditional Japanese & world patterns, and hands-on interactive. The canvas is the whole app: a floating dock opens one sheet at a time — **Patterns** (a visual browser with live previews of every generator), **Style** (palette cards + finish: desaturate, paper grain, vignette) and **Tune** (the current pattern's levers) — with seeded randomness so every piece is reproducible, and one-tap PNG export. No build step, no dependencies — just open it.
 
 ![GeoMaker — Silk Flow](screenshots/hero.jpg)
 
@@ -124,13 +124,13 @@ A family of traditional Japanese designs, from precise *wagara* tilings to inter
 | ![Kintsugi](screenshots/geo-kintsugi.jpg) | ![Shibori kanoko](screenshots/geo-shibori.jpg) |
 | ![Kumiko](screenshots/geo-kumiko.jpg) | |
 
-- **Wagara (和柄)** — eight classic patterns in one generator, switched by a dropdown: **seigaiha** (blue ocean waves), **asanoha** (hemp-leaf star lattice), **shippō** (linked "seven treasures" circles), **kikkō** (tortoiseshell hexagons), **kagome** (basket weave), **yagasuri** (arrow feathers), **uroko** (scales) and **ichimatsu** (checkerboard). Shared scale / line-width / two-tone-or-gradient levers.
+- **The wagara classics — each its own pattern** with focused levers: **Seigaiha (青海波)** nested ocean-wave shells, **Shippō (七宝)** linked "seven treasures" circles, **Kikkō (亀甲)** tortoiseshell hexagons, **Kagome (籠目)** triaxial basket weave, **Yagasuri (矢絣)** arrow-feather columns, **Uroko (鱗)** scale triangles and **Ichimatsu (市松)** the kabuki checkerboard.
 - **Kumiko (組子)** — the wooden shoji lattice: a square *jigumi* grid filled with fine muntin patterns (masu / diagonal star / kaku-asa square-hemp-leaf), with an optional wood-bevel highlight.
 - **Kintsugi (金継ぎ)** *(interactive)* — broken ceramic mended with metal. Voronoi shards filled as glaze, their seams stroked as gold/silver/copper veins. Tap to strike a new fracture, drag to paint a vein across the surface.
 - **Shibori (絞り)** *(interactive)* — indigo resist tie-dye: *kanoko* fawn-spots, *arashi* pole-wrap diagonals, *itajime* folded-clamp grid, all with soft dye-bleed edges. Drag to print resist or set the fold.
 - **Sayagata (紗綾形)** — the interlocking-manji key fret of kimono silk and irezumi backgrounds, built from a linked 卍 lattice with Z-step joins (plus a tight *higaki* weave variant), set on the 45° diagonal.
 - **Asanoha (麻の葉)** — a dedicated hemp-leaf star lattice with kumiko-style double-line joinery, rotation and scattered accent fills.
-- **Wagara II (和柄)** — five more classics in one generator: *bishamon kikkō* (the three-hex armor trefoil), *matsukawabishi* (pine-bark diamonds), *tatewaku* (rising steam), *hanabishi* (flower diamonds) and *raimon* (thunder scrolls).
+- **Five more, also standalone:** **Bishamon Kikkō (毘沙門亀甲)** the three-hex armor trefoil, **Matsukawabishi (松皮菱)** pine-bark diamonds, **Tatewaku (立涌)** rising steam, **Hanabishi (花菱)** flower diamonds and **Raimon (雷文)** thunder scrolls.
 - **Irezumi Waves & Clouds** *(interactive)* — the tattoo backgrounds: *nami* waves with spiral curls and foam fingers, *kumo* scallop clouds with concentric echo lines, *kasumi* stepped mist. Tap the canvas to stamp another crest, cloud or mist band exactly where you want it.
 - **Kiku & Sakura** — Japanese florals: layered chrysanthemum blooms, falling notched sakura petals, round ume blossoms with stamens.
 
@@ -139,7 +139,7 @@ A family of traditional Japanese designs, from precise *wagara* tilings to inter
 Global post-processing in the Style sheet, applied to every algorithm:
 
 - **Saturation** (0–1.5) — pull any palette toward muted, print-like tones, or fully grayscale; the palette cards preview the adjustment live.
-- **Line weight** (0.3×–3×) — thicken or thin every stroke the current pattern draws, from hairline etching to bold marker, on all forty-nine generators.
+- **Line weight** (0.3×–3×) — thicken or thin every stroke the current pattern draws, from hairline etching to bold marker, on all fifty-nine generators.
 - **Paper grain** — seeded film-grain overlay for a printed/risograph texture.
 - **Vignette** — soft darkened edges for a vintage plate look.
 
