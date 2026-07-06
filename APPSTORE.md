@@ -133,11 +133,12 @@ patterns — shaped live with your fingertips and saved straight to Photos.
 Ready to upload — real in-app captures at the exact required sizes, in
 `screenshots/appstore/`:
 
-- **iPhone 6.7"** — `1290 × 2796` (PNG, no alpha): `iphone-1-flower`,
-  `iphone-2-suminagashi`, `iphone-3-mandala`, `iphone-4-kintsugi`,
-  `iphone-5-mandelbrot`.
-- **iPad 13"** — `2048 × 2732`: `ipad-1-mandala`, `ipad-2-girih`,
-  `ipad-3-truchet`.
+- **iPhone 6.7"** — `1290 × 2796` (PNG, no alpha): `iphone-1-patterns`
+  (browser over the nami wave field), `iphone-2-suminagashi` (combed
+  marbling), `iphone-3-kiku` (packed kiku field + Tune sheet),
+  `iphone-4-sayagata` (fret + palette cards), `iphone-5-penrose`.
+- **iPad 13"** — `2048 × 2732`: `ipad-1-patterns` (kiku field + browser),
+  `ipad-2-girih`, `ipad-3-nami`.
 
 These show actual usage (controls + artwork), not splash/title art, per
 Guideline 2.3. Drag the matching set into each device size in App Store Connect.
