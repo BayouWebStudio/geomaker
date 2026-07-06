@@ -97,7 +97,7 @@ links and PNG export.
 
 ## Interactive patterns (tap & drag)
 
-Six generators respond to the pointer — drag right on the canvas (mouse or touch):
+Fifteen generators respond to the pointer — drag right on the canvas (mouse or touch):
 
 | | |
 |---|---|
@@ -109,6 +109,9 @@ Six generators respond to the pointer — drag right on the canvas (mouse or tou
 - **Voronoi Cells** — tap to add a cell, drag to move the nearest.
 - **Phyllotaxis** — drag to detune the angle / spacing.
 - **Moiré** — drag to move the second grating.
+- **Irezumi Waves & Clouds** — tap to stamp another crest, cloud or mist band in front of the field.
+- **Maze & Path** — drag to bend the whole path through a magnifying lens that follows your finger.
+- **Op Art** — drag to move the focal point of the illusion (the bulge, ring centre, tunnel vanishing point or wave phase).
 
 **Touch symmetry (kaleidoscope input):** the Style sheet has a symmetry control (2× to 12×) that replays your touch around the canvas centre — one drag combs the marbling in six places at once; one tap strikes six mirrored kintsugi fractures. Works on Suminagashi, Kintsugi, Voronoi and Shibori.
 

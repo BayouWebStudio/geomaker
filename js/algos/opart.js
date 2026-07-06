@@ -1,5 +1,6 @@
 // Op Art: bold optical-illusion graphics — concentric rings, rotating square
 // tunnels, Riley-style wavy line fields and bulge-warped checkerboards.
+// Drag the canvas to move the focal point of the illusion.
 
 import { TAU, samplePalette } from '../core/util.js';
 
@@ -7,7 +8,9 @@ export default {
   id: 'opart',
   name: 'Op Art',
   category: 'Geometric',
-  description: 'Optical illusions: concentric rings, square tunnels, wavy Riley lines and bulging checkerboards.',
+  interactive: true,
+  hint: 'drag to move the focal point of the illusion',
+  description: 'Optical illusions: bulging checkers, concentric rings, square tunnels and wavy Riley lines — drag the focus around.',
   params: [
     {
       key: 'style', label: 'Style', type: 'select', value: 'checker',
@@ -34,23 +37,25 @@ export default {
   create({ ctx, width, height, rng, noise, palette, params }) {
     const P = params;
     const colors = palette.colors;
-    const cx = width / 2;
-    const cy = height / 2;
-    const maxR = Math.hypot(cx, cy);
+    const maxR = Math.hypot(width / 2, height / 2);
+
+    // the focal point of the illusion — draggable
+    let fx = width / 2;
+    let fy = height / 2;
 
     function tone(i, total) {
       if (P.colorMode === 'gradient') return samplePalette(colors, total > 1 ? i / (total - 1) : 0);
       return i % 2 === 0 ? colors[0] : colors[colors.length - 1];
     }
 
-    // radial bulge: fisheye that pushes space out from the centre
+    // radial bulge: fisheye pushing space out from the focal point
     function warp(x, y) {
-      const dx = x - cx;
-      const dy = y - cy;
+      const dx = x - fx;
+      const dy = y - fy;
       const r = Math.hypot(dx, dy) / maxR;
       if (r === 0 || P.bulge === 0) return [x, y];
       const k = Math.pow(r, 1 - P.bulge * 0.8) / r;
-      return [cx + dx * k, cy + dy * k];
+      return [fx + dx * k, fy + dy * k];
     }
 
     function drawChecker() {
@@ -81,7 +86,8 @@ export default {
 
     function drawRings() {
       const step = P.scale;
-      const n = Math.ceil(maxR / step) + 1;
+      const reach = maxR + Math.hypot(fx - width / 2, fy - height / 2);
+      const n = Math.ceil(reach / step) + 1;
       for (let i = n; i >= 0; i--) {
         ctx.fillStyle = tone(i, n + 1);
         ctx.beginPath();
@@ -91,8 +97,8 @@ export default {
           const ang = (a / segs) * TAU;
           const w = 1 + noise.noise3(Math.cos(ang) * 0.7, Math.sin(ang) * 0.7, i * 0.22) * P.bulge * 0.35;
           const r = i * step * w;
-          const x = cx + Math.cos(ang) * r;
-          const y = cy + Math.sin(ang) * r;
+          const x = fx + Math.cos(ang) * r;
+          const y = fy + Math.sin(ang) * r;
           a === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
         }
         ctx.closePath();
@@ -106,10 +112,14 @@ export default {
       for (let i = 0; i < n; i++) {
         const t = i / n;
         const size = base * Math.pow(1 - t, 1.6) + 4;
-        const rot = i * P.twist * 0.22 * (rng.random() < 0.02 ? 1 : 1);
+        const rot = i * P.twist * 0.22;
         ctx.fillStyle = tone(i, n);
         ctx.save();
-        ctx.translate(cx, cy);
+        // deeper squares slide toward the focal point — a leaning tunnel
+        ctx.translate(
+          width / 2 + (fx - width / 2) * t,
+          height / 2 + (fy - height / 2) * t
+        );
         ctx.rotate(rot);
         ctx.fillRect(-size / 2, -size / 2, size, size);
         ctx.restore();
@@ -121,31 +131,49 @@ export default {
       const n = Math.ceil(width / spacing) + 2;
       ctx.lineWidth = spacing * P.duty;
       ctx.lineCap = 'round';
+      const phase = (fx / width) * TAU;
+      const ampK = 0.4 + 1.6 * (fy / height);
       for (let i = -1; i < n; i++) {
         ctx.strokeStyle = tone(i, n);
         ctx.beginPath();
         for (let y = -10; y <= height + 10; y += 6) {
           const ph = noise.noise3(0.4, i * 0.05, y * 0.002) * 3;
           const x = i * spacing
-            + Math.sin((y / height) * TAU * (1 + P.twist * 2.5) + i * 0.18 + ph) * spacing * P.bulge * 1.6;
+            + Math.sin((y / height) * TAU * (1 + P.twist * 2.5) + i * 0.18 + ph + phase)
+              * spacing * P.bulge * 1.6 * ampK;
           y <= -10 + 6 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
         }
         ctx.stroke();
       }
     }
 
-    let drawn = false;
+    function draw() {
+      ctx.fillStyle = palette.bg;
+      ctx.fillRect(0, 0, width, height);
+      if (P.style === 'checker') drawChecker();
+      else if (P.style === 'rings') drawRings();
+      else if (P.style === 'tunnel') drawTunnel();
+      else drawRiley();
+    }
+
+    let dirty = true;
     return {
       frame() {
-        if (drawn) return false;
-        drawn = true;
-        ctx.fillStyle = palette.bg;
-        ctx.fillRect(0, 0, width, height);
-        if (P.style === 'checker') drawChecker();
-        else if (P.style === 'rings') drawRings();
-        else if (P.style === 'tunnel') drawTunnel();
-        else drawRiley();
-        return false;
+        if (dirty) {
+          draw();
+          dirty = false;
+        }
+        return true; // stay live so the focal point can be dragged
+      },
+      onDown(x, y) {
+        fx = x;
+        fy = y;
+        dirty = true;
+      },
+      onMove(x, y) {
+        fx = x;
+        fy = y;
+        dirty = true;
       },
     };
   },

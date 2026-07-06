@@ -1,6 +1,7 @@
 // Maze & Path: single-line space-filling graphics — a perfect maze carved by
 // recursive backtracking, the Hilbert space-filling curve, and a wobbling
-// spiral — all drawn as one continuous stroke with controllable thickness.
+// spiral — one continuous stroke with controllable thickness. Drag the canvas
+// to bend the whole path through a magnifying lens that follows your finger.
 
 import { TAU, samplePalette } from '../core/util.js';
 
@@ -8,7 +9,9 @@ export default {
   id: 'maze',
   name: 'Maze & Path',
   category: 'Geometric',
-  description: 'One continuous line fills the plane: a perfect maze, the Hilbert curve, or a hand-drawn spiral.',
+  interactive: true,
+  hint: 'drag to bend the path with a lens',
+  description: 'One continuous line fills the plane: a perfect maze, the Hilbert curve, or a hand-drawn spiral — drag to warp it.',
   params: [
     {
       key: 'style', label: 'Path', type: 'select', value: 'maze',
@@ -20,6 +23,7 @@ export default {
     },
     { key: 'cell', label: 'Cell size', type: 'range', min: 8, max: 60, step: 1, value: 20 },
     { key: 'duty', label: 'Line thickness', type: 'range', min: 0.15, max: 0.85, step: 0.05, value: 0.5 },
+    { key: 'lens', label: 'Lens strength', type: 'range', min: 0, max: 1, step: 0.05, value: 0.55 },
     { key: 'wobble', label: 'Hand wobble', type: 'range', min: 0, max: 1, step: 0.05, value: 0 },
     { key: 'rounded', label: 'Rounded corners', type: 'checkbox', value: true },
     {
@@ -34,24 +38,17 @@ export default {
   create({ ctx, width, height, rng, noise, palette, params }) {
     const P = params;
 
-    function stroke(points) {
-      // draw as short runs so the palette can sweep along the path
-      ctx.lineWidth = P.cell * P.duty;
-      ctx.lineCap = P.rounded ? 'round' : 'square';
-      ctx.lineJoin = P.rounded ? 'round' : 'miter';
-      const runLen = Math.max(6, Math.floor(points.length / 110));
-      for (let s = 0; s < points.length - 1; s += runLen) {
-        const end = Math.min(points.length - 1, s + runLen);
-        ctx.strokeStyle = P.colorMode === 'single'
-          ? samplePalette(palette.colors, 0.35)
-          : samplePalette(palette.colors, s / points.length);
-        ctx.beginPath();
-        for (let i = s; i <= end; i++) {
-          const [x, y] = points[i];
-          i === s ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-        }
-        ctx.stroke();
-      }
+    // the drag lens: a local bulge centred on the pointer
+    let lensX = null;
+    let lensY = null;
+    const lensR = Math.min(width, height) * 0.38;
+    function warp([x, y]) {
+      if (lensX === null || P.lens === 0) return [x, y];
+      const dx = x - lensX;
+      const dy = y - lensY;
+      const r2 = (dx * dx + dy * dy) / (lensR * lensR);
+      const k = 1 + P.lens * 0.85 * Math.exp(-r2);
+      return [lensX + dx * k, lensY + dy * k];
     }
 
     function wob(x, y, k) {
@@ -141,17 +138,48 @@ export default {
       return points;
     }
 
-    let drawn = false;
+    // the path is generated once (seeded); dragging only re-projects it
+    const basePoints = P.style === 'maze' ? mazePath() : P.style === 'hilbert' ? hilbertPath() : spiralPath();
+
+    function draw() {
+      ctx.fillStyle = palette.bg;
+      ctx.fillRect(0, 0, width, height);
+      ctx.lineWidth = P.cell * P.duty;
+      ctx.lineCap = P.rounded ? 'round' : 'square';
+      ctx.lineJoin = P.rounded ? 'round' : 'miter';
+      const runLen = Math.max(6, Math.floor(basePoints.length / 110));
+      for (let s = 0; s < basePoints.length - 1; s += runLen) {
+        const end = Math.min(basePoints.length - 1, s + runLen);
+        ctx.strokeStyle = P.colorMode === 'single'
+          ? samplePalette(palette.colors, 0.35)
+          : samplePalette(palette.colors, s / basePoints.length);
+        ctx.beginPath();
+        for (let i = s; i <= end; i++) {
+          const [x, y] = warp(basePoints[i]);
+          i === s ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+      }
+    }
+
+    let dirty = true;
     return {
       frame() {
-        if (drawn) return false;
-        drawn = true;
-        ctx.fillStyle = palette.bg;
-        ctx.fillRect(0, 0, width, height);
-        if (P.style === 'maze') stroke(mazePath());
-        else if (P.style === 'hilbert') stroke(hilbertPath());
-        else stroke(spiralPath());
-        return false;
+        if (dirty) {
+          draw();
+          dirty = false;
+        }
+        return true; // stay live for the lens drag
+      },
+      onDown(x, y) {
+        lensX = x;
+        lensY = y;
+        dirty = true;
+      },
+      onMove(x, y) {
+        lensX = x;
+        lensY = y;
+        dirty = true;
       },
     };
   },
