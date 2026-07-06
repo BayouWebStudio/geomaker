@@ -188,31 +188,51 @@ function createEngine(style, { ctx, width, height, rng, palette, params }) {
       }
     }
 
-    // ---- raimon: square thunder-scroll spirals, alternating chirality ----
+    // ---- raimon: connected thunder-scroll bands (raimon-tsunagi) — square
+    // spirals alternately hanging from the top rail and standing on the
+    // bottom rail of each band, chirality alternating, everything joined ----
     function drawRaimon() {
       const s = P.size;
-      const cols = Math.ceil(D / s) + 2;
+      const pitch = s * 1.18; // band height incl. breathing room between rails
+      const rowsN = Math.ceil(D / pitch) + 2;
+      const colsN = Math.ceil(D / s) + 2;
       ctx.lineCap = 'square';
-      for (let j = -1; j < cols; j++) {
-        for (let i = -1; i < cols; i++) {
+      ctx.lineJoin = 'miter';
+      for (let j = -1; j < rowsN; j++) {
+        const yTop = j * pitch;
+        const yBot = yTop + s;
+        const rowInk = P.colorMode === 'gradient'
+          ? samplePalette(palette.colors, ((j + 2) % rowsN) / rowsN)
+          : ink;
+        ctx.strokeStyle = rowInk;
+        ctx.lineWidth = P.lineWidth;
+        // the rails the scrolls attach to
+        ctx.beginPath();
+        ctx.moveTo(-s, yTop);
+        ctx.lineTo(D + s, yTop);
+        ctx.moveTo(-s, yBot);
+        ctx.lineTo(D + s, yBot);
+        ctx.stroke();
+        for (let i = -1; i < colsN; i++) {
           const cx = i * s + s / 2;
-          const cy = j * s + s / 2;
-          const dir = (i + j) % 2 === 0 ? 1 : -1;
+          const cy = (yTop + yBot) / 2;
+          const dir = i % 2 === 0 ? 1 : -1; // chirality alternates
+          const hang = ((i % 2) + 2) % 2 === 0; // even scrolls hang, odd stand
+          const vy = hang ? 1 : -1;
           const turns = 3;
           const step = (s * 0.82) / (turns * 2);
-          ctx.strokeStyle = P.colorMode === 'gradient'
-            ? samplePalette(palette.colors, ((i + j + cols) % cols) / cols)
-            : ink;
-          ctx.lineWidth = P.lineWidth;
           ctx.beginPath();
+          // start ON the rail, drop/rise into the spiral's outer corner
           let x = cx - (s * 0.41) * dir;
-          let y = cy - s * 0.41;
+          let y = hang ? yTop : yBot;
           ctx.moveTo(x, y);
+          y = cy - s * 0.41 * vy;
+          ctx.lineTo(x, y);
           let len = s * 0.82;
-          let d = 0; // 0 right, 1 down, 2 left, 3 up
+          let d = 0; // 0 across, 1 inward, 2 back, 3 outward
           while (len > step * 0.6) {
             const dx = [dir, 0, -dir, 0][d];
-            const dy = [0, 1, 0, -1][d];
+            const dy = [0, vy, 0, -vy][d];
             x += dx * len;
             y += dy * len;
             ctx.lineTo(x, y);
