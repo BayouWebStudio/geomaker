@@ -42,6 +42,16 @@ const ctx = canvas.getContext('2d');
 const fxCanvas = document.getElementById('fx');
 const fxCtx = fxCanvas.getContext('2d');
 
+// Algorithms draw into this offscreen buffer; the visible canvas only ever
+// receives finished blits. That way slider scrubs never flash the bare
+// background — the old art holds until the new render has content.
+const buffer = document.createElement('canvas');
+const bctx = buffer.getContext('2d');
+
+function blit() {
+  ctx.drawImage(buffer, 0, 0);
+}
+
 const els = {
   showUi: document.getElementById('show-ui'),
   fav: document.getElementById('btn-fav'),
@@ -154,13 +164,22 @@ function fitCanvas() {
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   const w = window.innerWidth;
   const h = window.innerHeight;
-  for (const c of [canvas, fxCanvas]) {
-    c.width = Math.round(w * dpr);
-    c.height = Math.round(h * dpr);
-    c.style.width = w + 'px';
-    c.style.height = h + 'px';
+  const pw = Math.round(w * dpr);
+  const ph = Math.round(h * dpr);
+  for (const c of [canvas, fxCanvas, buffer]) {
+    // setting width clears a canvas — only do it when the size truly changed,
+    // so same-size regenerations keep the old art on screen until the blit
+    if (c.width !== pw || c.height !== ph) {
+      c.width = pw;
+      c.height = ph;
+    }
+    if (c.style) {
+      c.style.width = w + 'px';
+      c.style.height = h + 'px';
+    }
   }
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.setTransform(1, 0, 0, 1, 0, 0); // visible canvas: pixel-exact blits only
+  bctx.setTransform(dpr, 0, 0, dpr, 0, 0); // algorithms draw in CSS px
   return { w, h };
 }
 
@@ -211,6 +230,8 @@ function setPlayButton() {
   els.play.title = `${label} (P)`;
 }
 
+let lastRegen = 0;
+
 function regenerate() {
   const algo = algoById(state.algoId);
   const { w, h } = fitCanvas();
@@ -218,12 +239,25 @@ function regenerate() {
   // namespace the seed per algorithm so switching algos gives fresh compositions
   const rng = createRng(`${state.seed}::${algo.id}`);
   const noise = createNoise(rng);
-  ctx.fillStyle = palette.bg;
-  ctx.fillRect(0, 0, w, h);
-  applyLineWeight(ctx, state.look.weight);
-  instance = algo.create({ ctx, width: w, height: h, rng, noise, palette, params: currentParams(algo) });
+  bctx.fillStyle = palette.bg;
+  bctx.fillRect(0, 0, w, h);
+  applyLineWeight(bctx, state.look.weight);
+  instance = algo.create({ ctx: bctx, width: w, height: h, rng, noise, palette, params: currentParams(algo) });
   finished = false;
   playing = true;
+  // pump the new render synchronously for up to ~70ms before showing it:
+  // one-shot patterns finish outright (live slider scrubbing, no flash) and
+  // progressive ones get a visible head start instead of a bare background
+  const t0 = performance.now();
+  for (let i = 0; i < 240 && performance.now() - t0 < 70; i++) {
+    if (instance.frame() === false) {
+      finished = true;
+      playing = false;
+      break;
+    }
+  }
+  blit();
+  lastRegen = performance.now();
   canvas.style.cursor = algo.interactive ? 'crosshair' : 'default';
   setPlayButton();
   updateFx();
@@ -303,6 +337,7 @@ function tick() {
       playing = false;
       setPlayButton();
     }
+    blit();
   }
 }
 
@@ -412,8 +447,16 @@ function toast(msg) {
 
 let regenTimer = 0;
 function debounceRegen() {
+  // scrub-friendly: re-render immediately when enough time has passed since
+  // the last one (the buffer pipeline makes swaps flash-free), otherwise
+  // trail behind the drag so the final position always lands
   clearTimeout(regenTimer);
-  regenTimer = setTimeout(regenerate, 160);
+  const since = performance.now() - lastRegen;
+  if (since > 130) {
+    regenerate();
+  } else {
+    regenTimer = setTimeout(regenerate, 140 - since);
+  }
 }
 
 function rebuildLookControls() {
