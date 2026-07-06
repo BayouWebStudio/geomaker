@@ -90,33 +90,33 @@ for the privacy review.)
 
 **Promotional text (≤170 chars, editable anytime without review):**
 
-> Comb the ink. Bloom the kiku. Bend the fractal. 62 living pattern engines
+> Comb the ink. Bloom the kiku. Bend the fractal. 70 living pattern engines
 > under your fingertips — from irezumi waves to Penrose tilings. One tap saves
 > it to Photos.
 
 (164 chars. Alternates, both verified under the limit: "The pattern is
-endless: 62 generative engines — irezumi waves, mandalas, Penrose tilings —
+endless: 70 generative engines — irezumi waves, mandalas, Penrose tilings —
 shaped live under your fingers and saved straight to Photos." (151) · "Endless
 black & grey and full-color patterns. Touch the canvas: comb marbling ink,
 stamp wave crests, spin kaleidoscopes. No account, no ads, works offline."
 (156). Promotional text is the one listing field you can swap any time — reuse
 it later for "New patterns added" announcements.)
 
-**Description (paste as-is, 2,405 of 4,000 chars):**
+**Description (paste as-is, 2,567 of 4,000 chars):**
 
-> GeoMaker is a pattern studio that never runs dry. Pick one of 62 generative engines, move its levers, and watch original art redraw instantly — every piece grown from a seed, so anything you love can be brought back, tuned again, and saved to Photos in full resolution.
+> GeoMaker is a pattern studio that never runs dry. Pick one of 70 generative engines, move its levers, and watch original art redraw instantly — every piece grown from a seed, so anything you love can be brought back, tuned again, and saved to Photos in full resolution.
 >
 > TOUCH THE ART
 > Twenty-six engines respond to your fingers. Comb floating ink like real suminagashi marbling. Tap wave crests and clouds into an irezumi background. Fracture kintsugi ceramic, then drag its shards while the gold seams reflow. Re-carve a maze from your fingertip, drag the focus of an op-art illusion, morph a living fractal. Turn on kaleidoscope symmetry and one drag becomes six.
 >
 > THE JAPANESE COLLECTION
-> Made by a tattoo artist, GeoMaker goes unusually deep on classical Japanese pattern: sayagata and higaki frets, asanoha hemp-leaf, seigaiha waves, shippō, kikkō, kagome, yagasuri, uroko, ichimatsu, bishamon kikkō armor, matsukawabishi pine-bark, tatewaku rising steam, hanabishi, raimon thunder scrolls, kumiko lattices, kintsugi, indigo shibori, irezumi waves, clouds and mist, and kiku & sakura florals.
+> Made by a tattoo artist, GeoMaker goes unusually deep on classical Japanese pattern: sayagata and higaki frets, asanoha hemp-leaf, seigaiha waves, shippō, kikkō, kagome, yagasuri, uroko, ichimatsu, bishamon kikkō armor, matsukawabishi pine-bark, tatewaku rising steam, hanabishi, raimon thunder scrolls, shokkō brocade, kōji-tsunagi, fundō weight-chains, wachigai woven rings, same-komon shark skin, amime nets, kumiko lattices, kintsugi, indigo shibori, irezumi waves, clouds and mist, and kiku & sakura florals.
 >
 > AND EVERYTHING ELSE
 > • Organic — flow fields, reaction-diffusion, differential growth, mycelium, Voronoi, terrazzo
-> • Sacred & geometric — flower of life, mandalas, Metatron's cube, hex tilings, truchet, Islamic girih, Celtic knots
+> • Sacred & geometric — the Flower of Life (seed, flower and endless field), mandalas, Metatron's cube, hex tilings, truchet, Islamic girih, Celtic knots
 > • Wallpaper classics — polka-dot motifs, stripes & chevrons, herringbone parquet, fish scales, low-poly mesh, circuit boards
-> • Mathematical — Penrose aperiodic tiling, Archimedean tessellations, spirograph, mazes & the Hilbert curve, Greek key frets, op art
+> • Mathematical — Penrose aperiodic tiling, Cairo pentagons, Archimedean tessellations, spirograph, mazes & the Hilbert curve, Greek key frets, op art
 > • Fractal — Mandelbrot & Julia, L-systems, the Apollonian gasket, strange attractors
 >
 > MAKE IT YOURS

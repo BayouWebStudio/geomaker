@@ -39,6 +39,9 @@ import penrose from './penrose.js';
 import sayagata from './sayagata.js';
 import asanoha from './asanoha.js';
 import { WAGARA2_VARIANTS } from './wagara2.js';
+import { WAGARA3_VARIANTS } from './wagara3.js';
+import cairo from './cairo.js';
+import flowerlife from './flowerlife.js';
 import irezumi from './irezumi.js';
 import kiku from './kiku.js';
 import opart from './opart.js';
@@ -55,9 +58,9 @@ import aztec from './aztec.js';
 export const ALGORITHMS = [
   flow, coral, turing, ridge, mycelium, pebbles, terrazzo, contours, suminagashi, voronoi, kintsugi, shibori,
   flower, hexweave, mandala, truchet, motif, stripes, parquet, tessellation, penrose, opart, maze, meander,
-  spiro, circuit, delaunay, arcmosaic, polyomino, aztec, phyllotaxis, moire, ...WAGARA_VARIANTS, ...WAGARA2_VARIANTS,
-  sayagata, asanoha, kumiko, irezumi, kiku, automata,
-  quasicrystal, textile, girih, celtic, stipple, chladni, harmonograph, sacred2,
+  spiro, circuit, delaunay, arcmosaic, polyomino, aztec, cairo, phyllotaxis, moire, ...WAGARA_VARIANTS, ...WAGARA2_VARIANTS,
+  ...WAGARA3_VARIANTS, sayagata, asanoha, kumiko, irezumi, kiku, automata,
+  quasicrystal, textile, girih, celtic, stipple, chladni, harmonograph, sacred2, flowerlife,
   mandelbrot, lsystem, apollonian, attractor,
 ];
 
