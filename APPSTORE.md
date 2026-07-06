@@ -88,8 +88,19 @@ for the privacy review.)
 
 **Subtitle (≤30 chars):** Mandalas, waves & sacred art
 
-**Promotional text:** Endless organic, geometric, fractal and traditional
-patterns — shaped live with your fingertips and saved straight to Photos.
+**Promotional text (≤170 chars, editable anytime without review):**
+
+> Comb the ink. Bloom the kiku. Bend the fractal. 59 living pattern engines
+> under your fingertips — from irezumi waves to Penrose tilings. One tap saves
+> it to Photos.
+
+(164 chars. Alternates, both verified under the limit: "The pattern is
+endless: 59 generative engines — irezumi waves, mandalas, Penrose tilings —
+shaped live under your fingers and saved straight to Photos." (151) · "Endless
+black & grey and full-color patterns. Touch the canvas: comb marbling ink,
+stamp wave crests, spin kaleidoscopes. No account, no ads, works offline."
+(156). Promotional text is the one listing field you can swap any time — reuse
+it later for "New patterns added" announcements.)
 
 **Description:**
 
