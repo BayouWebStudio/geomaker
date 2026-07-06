@@ -1,7 +1,8 @@
 // Kintsugi (金継ぎ): broken ceramic repaired with gold. Voronoi shards (built by
 // per-site half-plane clipping) are filled as glaze and their seams are stroked
-// with a metallic vein. Interactive: tap to strike a new fracture, drag to draw
-// a gold vein across the surface.
+// with a metallic vein. Interactive like Voronoi Cells: drag grabs the nearest
+// shard and the whole fracture network — gold seams included — reflows live
+// under your finger; tap strikes a brand-new shard.
 
 import { samplePalette, mixHex, hexToRgb } from '../core/util.js';
 
@@ -17,8 +18,8 @@ export default {
   category: 'Organic',
   interactive: true,
   symmetry: true,
-  hint: 'Tap to crack a new shard · drag to paint a gold vein',
-  description: 'Broken ceramic mended with gold. Tap to strike a fracture, drag to draw a gold seam across the glaze.',
+  hint: 'tap to strike a new shard · drag a shard and the gold reflows',
+  description: 'Broken ceramic mended with gold. Tap to strike a fracture; drag a shard and the crack network reflows live.',
   params: [
     { key: 'shards', label: 'Shards', type: 'range', min: 6, max: 160, step: 2, value: 34 },
     { key: 'relax', label: 'Evenness (relax)', type: 'range', min: 0, max: 3, step: 1, value: 1 },
@@ -116,17 +117,27 @@ export default {
     }
     computePolys();
 
-    const veins = []; // user-drawn gold seams (arrays of [x,y])
-    const current = new Map(); // in-progress veins, keyed by mirror index
+    const dragIdx = new Map(); // shard being dragged, keyed by mirror index
+
+    function nearestSite(x, y) {
+      let best = -1;
+      let bd = Infinity;
+      for (let i = 0; i < sites.length; i++) {
+        const dx = x - sites[i].x;
+        const dy = y - sites[i].y;
+        const d = dx * dx + dy * dy;
+        if (d < bd) {
+          bd = d;
+          best = i;
+        }
+      }
+      return best;
+    }
 
     function tracePoly(poly) {
       ctx.moveTo(poly[0][0], poly[0][1]);
       for (let k = 1; k < poly.length; k++) ctx.lineTo(poly[k][0], poly[k][1]);
       ctx.closePath();
-    }
-    function tracePolyline(pts) {
-      ctx.moveTo(pts[0][0], pts[0][1]);
-      for (let k = 1; k < pts.length; k++) ctx.lineTo(pts[k][0], pts[k][1]);
     }
 
     // three passes give the seam a rounded metallic body with a bright core
@@ -169,9 +180,6 @@ export default {
         if (poly.length < 3) continue;
         strokeMetal(() => tracePoly(poly), P.seamWidth);
       }
-      // user-painted veins on top
-      for (const v of veins) if (v.length > 1) strokeMetal(() => tracePolyline(v), P.seamWidth);
-      for (const v of current.values()) if (v.length > 1) strokeMetal(() => tracePolyline(v), P.seamWidth);
     }
 
     return {
@@ -183,26 +191,22 @@ export default {
         return true;
       },
       onDown(x, y, k = 0) {
-        current.set(k, [[x, y]]);
+        dragIdx.set(k, nearestSite(x, y));
       },
       onMove(x, y, dx, dy, k = 0) {
-        const v = current.get(k);
-        if (v) {
-          v.push([x, y]);
-          dirty = true;
-        }
+        const i = dragIdx.get(k);
+        if (i === undefined || i < 0) return;
+        sites[i].x = x;
+        sites[i].y = y;
+        computePolys(); // the whole fracture network reflows under the finger
+        dirty = true;
       },
       onUp(x, y, dist, k = 0) {
-        if (dist < 6) {
-          if (sites.length < 400) {
-            sites.push({ x, y, t: rng.random() });
-            computePolys();
-          }
-        } else {
-          const v = current.get(k);
-          if (v && v.length > 1) veins.push(v);
+        if (dist < 6 && sites.length < 400) {
+          sites.push({ x, y, t: rng.random() });
+          computePolys();
         }
-        current.delete(k);
+        dragIdx.delete(k);
         dirty = true;
       },
     };

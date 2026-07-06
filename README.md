@@ -104,13 +104,13 @@ Fifteen generators respond to the pointer — drag right on the canvas (mouse or
 | ![Suminagashi](screenshots/geo-suminagashi.jpg) | ![Suminagashi, combed by dragging](screenshots/geo-suminagashi-combed.jpg) |
 
 - **Suminagashi** (ink marbling) — each drop is an area-preserving map that expands the existing ink outward into concentric rings; combing shears them into waves. **Tap** to drop ink, **drag** to comb the surface (the right-hand image above is the left one after a few drags).
-- **Kintsugi** — tap to strike a fracture, drag to paint a gold vein (see below).
+- **Kintsugi** — tap to strike a fracture; drag a shard and the whole crack network — gold seams included — reflows live.
 - **Shibori** — kanoko: drag to print resist; arashi/itajime: drag to fold & angle (see below).
 - **Voronoi Cells** — tap to add a cell, drag to move the nearest.
 - **Phyllotaxis** — drag to detune the angle / spacing.
 - **Moiré** — drag to move the second grating.
 - **Irezumi Waves & Clouds** — tap to stamp another crest, cloud or mist band in front of the field.
-- **Maze & Path** — drag to bend the whole path through a magnifying lens that follows your finger.
+- **Maze & Path** — drag to re-carve the maze rooted at your fingertip (the color gradient radiates from your touch); the spiral follows your finger; the Hilbert curve bends through a lens.
 - **Op Art** — drag to move the focal point of the illusion (the bulge, ring centre, tunnel vanishing point or wave phase).
 
 **Touch symmetry (kaleidoscope input):** the Style sheet has a symmetry control (2× to 12×) that replays your touch around the canvas centre — one drag combs the marbling in six places at once; one tap strikes six mirrored kintsugi fractures. Works on Suminagashi, Kintsugi, Voronoi and Shibori.
@@ -131,7 +131,7 @@ A family of traditional Japanese designs, from precise *wagara* tilings to inter
 
 - **The wagara classics — each its own pattern** with focused levers: **Seigaiha (青海波)** nested ocean-wave shells, **Shippō (七宝)** linked "seven treasures" circles, **Kikkō (亀甲)** tortoiseshell hexagons, **Kagome (籠目)** triaxial basket weave, **Yagasuri (矢絣)** arrow-feather columns, **Uroko (鱗)** scale triangles and **Ichimatsu (市松)** the kabuki checkerboard.
 - **Kumiko (組子)** — the wooden shoji lattice: a square *jigumi* grid filled with fine muntin patterns (masu / diagonal star / kaku-asa square-hemp-leaf), with an optional wood-bevel highlight.
-- **Kintsugi (金継ぎ)** *(interactive)* — broken ceramic mended with metal. Voronoi shards filled as glaze, their seams stroked as gold/silver/copper veins. Tap to strike a new fracture, drag to paint a vein across the surface.
+- **Kintsugi (金継ぎ)** *(interactive)* — broken ceramic mended with metal. Voronoi shards filled as glaze, their seams stroked as gold/silver/copper veins. Tap to strike a new fracture; drag a shard and the fracture network reflows live.
 - **Shibori (絞り)** *(interactive)* — indigo resist tie-dye: *kanoko* fawn-spots, *arashi* pole-wrap diagonals, *itajime* folded-clamp grid, all with soft dye-bleed edges. Drag to print resist or set the fold.
 - **Sayagata (紗綾形)** — the interlocking-manji key fret of kimono silk and irezumi backgrounds, built from a linked 卍 lattice with Z-step joins (plus a tight *higaki* weave variant), set on the 45° diagonal.
 - **Asanoha (麻の葉)** — a dedicated hemp-leaf star lattice with kumiko-style double-line joinery, rotation and scattered accent fills.

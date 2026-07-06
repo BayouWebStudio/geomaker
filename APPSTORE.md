@@ -107,7 +107,7 @@ it later for "New patterns added" announcements.)
 > GeoMaker is a pattern studio that never runs dry. Pick one of 59 generative engines, move its levers, and watch original art redraw instantly — every piece grown from a seed, so anything you love can be brought back, tuned again, and saved to Photos in full resolution.
 >
 > TOUCH THE ART
-> Fifteen engines respond to your fingers. Comb floating ink like real suminagashi marbling. Tap wave crests and clouds into an irezumi background. Fracture kintsugi ceramic and paint the gold vein yourself. Bend a maze through a lens, drag the focus of an op-art illusion, morph a living fractal. Turn on kaleidoscope symmetry and one drag becomes six.
+> Fifteen engines respond to your fingers. Comb floating ink like real suminagashi marbling. Tap wave crests and clouds into an irezumi background. Fracture kintsugi ceramic, then drag its shards while the gold seams reflow. Re-carve a maze from your fingertip, drag the focus of an op-art illusion, morph a living fractal. Turn on kaleidoscope symmetry and one drag becomes six.
 >
 > THE JAPANESE COLLECTION
 > Made by a tattoo artist, GeoMaker goes unusually deep on classical Japanese pattern: sayagata and higaki frets, asanoha hemp-leaf, seigaiha waves, shippō, kikkō, kagome, yagasuri, uroko, ichimatsu, bishamon kikkō armor, matsukawabishi pine-bark, tatewaku rising steam, hanabishi, raimon thunder scrolls, kumiko lattices, kintsugi, indigo shibori, irezumi waves, clouds and mist, and kiku & sakura florals.
