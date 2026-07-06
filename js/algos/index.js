@@ -62,11 +62,12 @@ export function algoById(id) {
   return ALGORITHMS.find((a) => a.id === id) || ALGORITHMS[0];
 }
 
-// The free tier on iOS (everything is free on the open web build). Eight
-// picks spanning every category — organic, sacred, radial, tiling, Japanese,
-// op-art and fractal, three of them touch-interactive — so the taste is real
-// while the deep Japanese collection stays part of the unlock.
+// The free tier on iOS (everything is free on the open web build). Eleven
+// picks, six of them touch-interactive — the fun is free to feel: comb the
+// marbling, fracture kintsugi, drag voronoi cells, lens-bend the maze, move
+// the op-art focus, morph the fractal. The deep Japanese collection (beyond
+// seigaiha) stays part of the unlock.
 export const FREE_ALGO_IDS = [
-  'flow', 'suminagashi', 'flower', 'mandala',
-  'truchet', 'seigaiha', 'opart', 'mandelbrot',
+  'flow', 'flower', 'mandala', 'truchet', 'seigaiha',
+  'suminagashi', 'kintsugi', 'voronoi', 'maze', 'opart', 'mandelbrot',
 ];

@@ -29,7 +29,7 @@ About panel already links the GitHub copy.)
 
 ## In-App Purchase setup (App Store Connect)
 
-The app is free with 8 free patterns; everything else is behind a **one-time
+The app is free with 11 free patterns; everything else is behind a **one-time
 $5.99 unlock** (no subscription). Purchases run on StoreKit 2 directly via the
 in-app `GeoPayPlugin.swift` — no third-party SDK, no server.
 
@@ -71,7 +71,7 @@ In App Store Connect → **App Privacy**:
 > several generators directly by touch (drag to comb the marbling ink, fracture
 > the kintsugi ceramic, bend the fractal, spin the quasicrystal). Finished pieces
 > are exported through the native iOS share sheet to Photos or Files. No demo
-> account is required. Eight patterns are free to use in full; the remaining
+> account is required. Eleven patterns are free to use in full (six touch-interactive); the remaining
 > patterns are unlocked by a single non-consumable purchase ("GeoMaker Pro
 > Unlock", $5.99) processed entirely through StoreKit — the unlock sheet
 > (reached by tapping any locked pattern) contains the required **Restore
@@ -127,7 +127,7 @@ it later for "New patterns added" announcements.)
 > • A favorites shelf that stores the full recipe of anything you make
 > • Full-resolution PNG export through the share sheet
 >
-> Eight patterns are free forever, fully featured. A single one-time purchase unlocks everything else — no subscription, ever.
+> Eleven patterns are free forever, fully featured — six of them touch-interactive. A single one-time purchase unlocks everything else — no subscription, ever.
 >
 > Private by design: no account, no ads, no tracking, no data collected. Works completely offline.
 >
