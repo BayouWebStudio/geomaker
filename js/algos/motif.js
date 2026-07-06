@@ -5,7 +5,7 @@
 
 import { TAU, samplePalette } from '../core/util.js';
 
-const MOTIF_KEYS = ['dot', 'ring', 'star', 'sparkle', 'heart', 'moon', 'cross', 'triangle', 'diamond'];
+const MOTIF_KEYS = ['dot', 'ring', 'star', 'sparkle', 'heart', 'moon', 'cross', 'triangle', 'diamond', 'snowflake'];
 
 export default {
   id: 'motif',
@@ -25,6 +25,7 @@ export default {
         { value: 'cross', label: 'crosses' },
         { value: 'triangle', label: 'triangles' },
         { value: 'diamond', label: 'diamonds' },
+        { value: 'snowflake', label: 'snowflakes' },
         { value: 'mixed', label: 'mixed (per seed)' },
       ],
     },
@@ -110,6 +111,25 @@ export default {
         ctx.lineTo(-r, -t);
         ctx.lineTo(-t, -t);
         ctx.closePath();
+      } else if (kind === 'snowflake') {
+        // six dendrite arms with paired side branches
+        for (let arm = 0; arm < 6; arm++) {
+          const a = (arm / 6) * TAU - Math.PI / 2;
+          const ux = Math.cos(a);
+          const uy = Math.sin(a);
+          ctx.moveTo(0, 0);
+          ctx.lineTo(ux * r, uy * r);
+          for (const bt of [0.45, 0.7]) {
+            const bx = ux * r * bt;
+            const by = uy * r * bt;
+            const bl = r * 0.28 * (1.2 - bt);
+            for (const sgn of [-1, 1]) {
+              const ba = a + (sgn * Math.PI) / 3;
+              ctx.moveTo(bx, by);
+              ctx.lineTo(bx + Math.cos(ba) * bl, by + Math.sin(ba) * bl);
+            }
+          }
+        }
       } else if (kind === 'triangle') {
         ctx.moveTo(0, -r);
         ctx.lineTo(r * 0.87, r * 0.5);
@@ -163,6 +183,7 @@ export default {
             ctx.translate(x, y);
             ctx.rotate(rot);
             const outlined = kind === 'ring'
+              || kind === 'snowflake' // dendrite arms are strokes by nature
               || P.fillStyle === 'outline'
               || (P.fillStyle === 'mix' && rng.random() < 0.5);
             tracePath(kind, r);

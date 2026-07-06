@@ -47,12 +47,15 @@ import meander from './meander.js';
 import spiro from './spiro.js';
 import circuit from './circuit.js';
 import delaunay from './delaunay.js';
+import arcmosaic from './arcmosaic.js';
+import polyomino from './polyomino.js';
+import aztec from './aztec.js';
 
 // Grouped in the UI by each algorithm's `category` (defaulting to "Organic").
 export const ALGORITHMS = [
   flow, coral, turing, ridge, mycelium, pebbles, terrazzo, contours, suminagashi, voronoi, kintsugi, shibori,
   flower, hexweave, mandala, truchet, motif, stripes, parquet, tessellation, penrose, opart, maze, meander,
-  spiro, circuit, delaunay, phyllotaxis, moire, ...WAGARA_VARIANTS, ...WAGARA2_VARIANTS,
+  spiro, circuit, delaunay, arcmosaic, polyomino, aztec, phyllotaxis, moire, ...WAGARA_VARIANTS, ...WAGARA2_VARIANTS,
   sayagata, asanoha, kumiko, irezumi, kiku, automata,
   quasicrystal, textile, girih, celtic, stipple, chladni, harmonograph, sacred2,
   mandelbrot, lsystem, apollonian, attractor,

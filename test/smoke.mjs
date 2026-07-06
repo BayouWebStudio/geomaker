@@ -70,7 +70,7 @@ import { ALGORITHMS } from '../js/algos/index.js';
 
 // algorithm registry + parameter schemas
 {
-  assert.equal(ALGORITHMS.length, 59);
+  assert.equal(ALGORITHMS.length, 62);
   const ids = new Set();
   for (const algo of ALGORITHMS) {
     assert.ok(algo.id && algo.name && algo.description);

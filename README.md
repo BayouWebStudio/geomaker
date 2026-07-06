@@ -1,6 +1,6 @@
 # GeoMaker
 
-**A pattern studio in your browser.** Fifty-nine generative-art algorithms — organic, geometric, fractal, traditional Japanese & world patterns, and hands-on interactive. The canvas is the whole app: a floating dock opens one sheet at a time — **Patterns** (a visual browser with live previews of every generator), **Style** (palette cards + finish: desaturate, paper grain, vignette) and **Tune** (the current pattern's levers) — with seeded randomness so every piece is reproducible, and one-tap PNG export. No build step, no dependencies — just open it.
+**A pattern studio in your browser.** Sixty-two generative-art algorithms — organic, geometric, fractal, traditional Japanese & world patterns, and hands-on interactive. The canvas is the whole app: a floating dock opens one sheet at a time — **Patterns** (a visual browser with live previews of every generator), **Style** (palette cards + finish: desaturate, paper grain, vignette) and **Tune** (the current pattern's levers) — with seeded randomness so every piece is reproducible, and one-tap PNG export. No build step, no dependencies — just open it.
 
 ![GeoMaker — Silk Flow](screenshots/hero.jpg)
 
@@ -72,6 +72,9 @@ links and PNG export.
 - **Spirograph** — gear-drawn hypotrochoid curves layered into guilloché engraving rosettes; wheel ratio and pen offset reshape the figure.
 - **Circuit Board** *(interactive)* — PCB traces with 45° bends that never cross, ending in pads and vias. Drag on the board to route your own trace.
 - **Low-Poly Mesh** *(interactive)* — the faceted-triangle wallpaper look: a jittered point cloud triangulated (Bowyer–Watson) and flat-shaded like cut glass. Drag a vertex and the whole mesh retriangulates live.
+- **Arc Mosaic** *(interactive)* — Bauhaus tile mosaics: half-discs, quarter fans, leaves and shell rings on a grid. Tap a tile to rotate it; drag to spin a path of tiles.
+- **Polyomino Tiles** — the plane packed with tetromino/pentomino pieces, bold outlines — a finished Tetris wall.
+- **Aztec Bands** — Andean textile geometry: stacked bands of stepped diamonds, zigzags, frets and checker strips.
 - **Phyllotaxis** *(interactive)* — a sunflower seed-head at the golden angle (Vogel's model). Drag ↔ to detune the divergence angle and watch the spiral arms reorganize, ↕ to change the spacing.
 - **Moiré** *(interactive)* — interference fringes from two overlaid gratings (concentric rings or parallel lines). Drag to move the second layer and shimmer the moiré.
 - **Islamic Girih** — Islamic geometric star patterns: interlocking {n/m} star polygons (8-, 10- or 12-point) on interleaved grids, forming the classic star-and-cross strapwork.
@@ -97,7 +100,7 @@ links and PNG export.
 
 ## Interactive patterns (tap & drag)
 
-Twenty-five generators respond to the pointer — drag right on the canvas (mouse or touch):
+Twenty-six generators respond to the pointer — drag right on the canvas (mouse or touch):
 
 | | |
 |---|---|
