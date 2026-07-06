@@ -41,8 +41,8 @@ links and PNG export.
 - **Turing Patterns** — Gray-Scott reaction-diffusion on a torus. Presets for coral / mitosis / worms / maze / solitons, plus raw feed & kill sliders, seeding styles and banded rendering.
 - **Ridgelines** — stacked noise-displaced ridge lines with occlusion fills, like mountain strata or a topographic record. Can animate with a slow drift.
 - **Mycelium** — branching, self-avoiding random walkers that wander, fork, taper and die when they touch existing growth: roots, lightning, fungal nets.
-- **Pebbles** — organic circle packing drawn as noise-wobbled flat blobs: river stones, cells. Includes an "offset ink" misprint mode and outline-only mode.
-- **Terrazzo** — café-floor stone: angular polygon chips dart-thrown into a grout field with a dusting of fine speckles; coverage, angularity, outline and three color treatments.
+- **Pebbles** *(interactive)* — organic circle packing drawn as noise-wobbled flat blobs: river stones, cells. Drag a stone and the pack shoves aside in a wavefront; tap to drop a new one.
+- **Terrazzo** *(interactive)* — café-floor stone: angular polygon chips dart-thrown into a grout field with speckle dust. Drag a chip and the floor shoves around your finger; tap to set a new chip.
 - **Contours** — a topographic map of a fractal noise landscape: smooth elevation bands plus marching-squares iso-lines, optionally drifting.
 - **Dotwork** — weighted stippling: density-driven dot fields with an even-spacing pass, like hand-poked dotwork or engraving stipple.
 - **Voronoi Cells** *(interactive)* — a mosaic of nearest-neighbour cells (cracked glass, scales, stone) built by exact half-plane clipping, with Lloyd relaxation for evenness. Tap to add a cell, drag to move the nearest one.
@@ -71,7 +71,7 @@ links and PNG export.
 - **Greek Key** — classical fret borders (key spirals, T-frets, stepped zigzags) running in banded rows between rails, like a vase or mosaic floor.
 - **Spirograph** — gear-drawn hypotrochoid curves layered into guilloché engraving rosettes; wheel ratio and pen offset reshape the figure.
 - **Circuit Board** — PCB traces with 45° bends that never cross, ending in pads and vias — tech wallpaper on dark palettes, blueprint linework on light ones.
-- **Low-Poly Mesh** — the faceted-triangle wallpaper look: a jittered point cloud triangulated (Bowyer–Watson) and flat-shaded like cut glass.
+- **Low-Poly Mesh** *(interactive)* — the faceted-triangle wallpaper look: a jittered point cloud triangulated (Bowyer–Watson) and flat-shaded like cut glass. Drag a vertex and the whole mesh retriangulates live.
 - **Phyllotaxis** *(interactive)* — a sunflower seed-head at the golden angle (Vogel's model). Drag ↔ to detune the divergence angle and watch the spiral arms reorganize, ↕ to change the spacing.
 - **Moiré** *(interactive)* — interference fringes from two overlaid gratings (concentric rings or parallel lines). Drag to move the second layer and shimmer the moiré.
 - **Islamic Girih** — Islamic geometric star patterns: interlocking {n/m} star polygons (8-, 10- or 12-point) on interleaved grids, forming the classic star-and-cross strapwork.
@@ -97,7 +97,7 @@ links and PNG export.
 
 ## Interactive patterns (tap & drag)
 
-Fifteen generators respond to the pointer — drag right on the canvas (mouse or touch):
+Eighteen generators respond to the pointer — drag right on the canvas (mouse or touch):
 
 | | |
 |---|---|
@@ -112,6 +112,8 @@ Fifteen generators respond to the pointer — drag right on the canvas (mouse or
 - **Irezumi Waves & Clouds** — tap to stamp another crest, cloud or mist band in front of the field.
 - **Maze & Path** — drag to re-carve the maze rooted at your fingertip (the color gradient radiates from your touch); the spiral follows your finger; the Hilbert curve bends through a lens.
 - **Op Art** — drag to move the focal point of the illusion (the bulge, ring centre, tunnel vanishing point or wave phase).
+- **Pebbles / Terrazzo** — drag a stone or chip; the pack shoves aside around your finger.
+- **Low-Poly Mesh** — drag a vertex; the triangulation reflows live.
 
 **Touch symmetry (kaleidoscope input):** the Style sheet has a symmetry control (2× to 12×) that replays your touch around the canvas centre — one drag combs the marbling in six places at once; one tap strikes six mirrored kintsugi fractures. Works on Suminagashi, Kintsugi, Voronoi and Shibori.
 

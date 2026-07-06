@@ -9,7 +9,10 @@ const VERTS = 26;
 export default {
   id: 'pebbles',
   name: 'Pebbles',
-  description: 'Circle-packed stones drawn as wobbly flat blobs — terrazzo, cells, shingle.',
+  interactive: true,
+  symmetry: true,
+  hint: 'drag a stone and the pack shoves aside · tap to drop a new one',
+  description: 'Circle-packed stones drawn as wobbly flat blobs — drag one and the whole pack shoves around your finger.',
   params: [
     { key: 'tries', label: 'Packing attempts', type: 'range', min: 500, max: 8000, step: 100, value: 3000 },
     { key: 'minR', label: 'Smallest stone', type: 'range', min: 2, max: 20, step: 1, value: 4 },
@@ -67,7 +70,7 @@ export default {
       let t;
       if (P.colorBy === 'size') t = (s.r - P.minR) / Math.max(1, P.maxR - P.minR);
       else if (P.colorBy === 'position') t = (s.x / width + s.y / height) / 2;
-      else t = rng.random();
+      else t = s.t; // stored at placement so full redraws keep each stone's color
       const fill = samplePalette(palette.colors, t);
       const line = mixHex(fill, bgIsDark ? '#ffffff' : '#000000', 0.35);
 
@@ -90,6 +93,56 @@ export default {
       }
     }
 
+    function allowedRadiusAt(x, y) {
+      let allowed = P.maxR;
+      for (const s of placed) {
+        const d = Math.hypot(x - s.x, y - s.y) - s.r - P.gap;
+        if (d < allowed) {
+          allowed = d;
+          if (allowed < P.minR) break;
+        }
+      }
+      return allowed;
+    }
+
+    // wavefront relaxation: the dragged stone pushes overlapping neighbours
+    // out, which push theirs — the pack shoves aside like real shingle
+    function shove(rootIdx) {
+      let wave = [rootIdx];
+      const touched = new Set(wave);
+      for (let pass = 0; pass < 3 && wave.length; pass++) {
+        const next = [];
+        for (const mi of wave) {
+          const m = placed[mi];
+          for (let j = 0; j < placed.length; j++) {
+            if (touched.has(j)) continue;
+            const s = placed[j];
+            const dx = s.x - m.x;
+            const dy = s.y - m.y;
+            const min = s.r + m.r + P.gap;
+            const d = Math.hypot(dx, dy) || 0.001;
+            if (d < min) {
+              const push = (min - d) / d;
+              s.x += dx * push;
+              s.y += dy * push;
+              touched.add(j);
+              next.push(j);
+            }
+          }
+        }
+        wave = next;
+      }
+    }
+
+    let dirty = false;
+    const dragIdx = new Map(); // per mirror index
+
+    function redraw() {
+      ctx.fillStyle = palette.bg;
+      ctx.fillRect(0, 0, width, height);
+      for (let i = 0; i < placed.length; i++) drawStone(placed[i], i + 1);
+    }
+
     return {
       frame() {
         // place a batch per frame so the packing visibly fills in
@@ -99,21 +152,48 @@ export default {
           attempts++;
           const x = rng.range(-overflow, width + overflow);
           const y = rng.range(-overflow, height + overflow);
-          let allowed = P.maxR;
-          for (const s of placed) {
-            const d = Math.hypot(x - s.x, y - s.y) - s.r - P.gap;
-            if (d < allowed) {
-              allowed = d;
-              if (allowed < P.minR) break;
-            }
-          }
+          const allowed = allowedRadiusAt(x, y);
           if (allowed < P.minR) continue;
-          const stone = { x, y, r: Math.min(allowed, P.maxR) * rng.range(0.85, 1) };
+          const stone = { x, y, r: Math.min(allowed, P.maxR) * rng.range(0.85, 1), t: rng.random() };
           placed.push(stone);
           drawStone(stone, placed.length);
           placedThisFrame++;
         }
-        return attempts < P.tries;
+        if (dirty) {
+          redraw();
+          dirty = false;
+        }
+        return true; // stay live for touch
+      },
+      onDown(x, y, k = 0) {
+        let best = -1;
+        let bd = Infinity;
+        for (let i = 0; i < placed.length; i++) {
+          const d = Math.hypot(x - placed[i].x, y - placed[i].y) - placed[i].r;
+          if (d < bd) {
+            bd = d;
+            best = i;
+          }
+        }
+        dragIdx.set(k, best);
+      },
+      onMove(x, y, dx, dy, k = 0) {
+        const i = dragIdx.get(k);
+        if (i === undefined || i < 0) return;
+        placed[i].x = x;
+        placed[i].y = y;
+        shove(i);
+        dirty = true;
+      },
+      onUp(x, y, dist, k = 0) {
+        if (dist < 6 && placed.length < 3000) {
+          const allowed = allowedRadiusAt(x, y);
+          if (allowed >= P.minR) {
+            placed.push({ x, y, r: Math.min(allowed, P.maxR), t: rng.random() });
+            dirty = true;
+          }
+        }
+        dragIdx.delete(k);
       },
     };
   },
