@@ -10,8 +10,8 @@ Shared with the Vesica Studio listing (same developer account).
 
 | Field | Value |
 |---|---|
-| App name | **GeoMaker** |
-| Subtitle | **Generative pattern studio** |
+| App name | **GeoMaker – Pattern Studio** (the bare name "GeoMaker" is taken on the App Store; the icon label stays **GeoMaker** via `CFBundleDisplayName`) |
+| Subtitle | **Mandalas, waves & sacred art** (avoids repeating "pattern studio" from the name; adds search keywords) |
 | Developer / Seller | **Vesica Studio** (Wesche Tattoo) |
 | Bundle ID | `com.bayouwebstudio.geomaker` |
 | Primary category | Graphics & Design |
@@ -84,9 +84,9 @@ for the privacy review.)
 
 ## Listing copy
 
-**Name:** GeoMaker
+**Name:** GeoMaker – Pattern Studio
 
-**Subtitle (≤30 chars):** Generative pattern studio
+**Subtitle (≤30 chars):** Mandalas, waves & sacred art
 
 **Promotional text:** Endless organic, geometric, fractal and traditional
 patterns — shaped live with your fingertips and saved straight to Photos.
