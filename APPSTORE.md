@@ -161,6 +161,19 @@ the gallery reads as a single connected banner.
 These show actual usage (controls + artwork), not splash/title art, per
 Guideline 2.3. Drag the matching set into each device size in App Store Connect.
 
+## App Previews (video)
+
+Both in `screenshots/appstore/preview/`, 28.4s, H.264 + silent audio track,
+same storyboard: shokkō brocade hero with a live Scale morph → pattern
+browser → kiku palette swap → suminagashi touch-combing → immersive shokkō
+in Noir.
+
+- **iPhone slot** — `iphone-preview.mp4`, `886 × 1920` portrait.
+- **iPad slot** — `ipad-preview.mp4`, `1200 × 1600` portrait.
+
+Drag each into the App Preview box (left of the screenshots) for the matching
+device size. Previews auto-play muted on the store page.
+
 ## Pre-submit checklist
 
 - [ ] **Deploy the privacy page**: copy `site/vesica.studio/geomaker-privacy.html`
@@ -180,7 +193,7 @@ Guideline 2.3. Drag the matching set into each device size in App Store Connect.
 
 - **4.2 minimum functionality:** on-device generation + touch interaction +
   native share/save + fully offline (see review notes).
-- **4.3 spam (wallpaper is a saturated category):** 59 distinct algorithms with
+- **4.3 spam (wallpaper is a saturated category):** 70 distinct algorithms with
   live parametric control is the "meaningfully different/improved" experience.
 - **5.1.1 privacy:** policy hosted + in-app; nothing collected.
 - **2.1 completeness:** no placeholder/debug content; every control works; the
