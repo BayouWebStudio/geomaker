@@ -213,12 +213,14 @@ function createEngine(style, { ctx, width, height, rng, palette, params }) {
         ctx.moveTo(-s, yBot);
         ctx.lineTo(D + s, yBot);
         ctx.stroke();
+        // every scroll in a band is identical and level; whole bands
+        // alternate hanging/standing (and twist) for the classical rhythm
+        const hang = ((j % 2) + 2) % 2 === 0;
+        const vy = hang ? 1 : -1;
+        const dir = hang ? 1 : -1;
         for (let i = -1; i < colsN; i++) {
           const cx = i * s + s / 2;
           const cy = (yTop + yBot) / 2;
-          const dir = i % 2 === 0 ? 1 : -1; // chirality alternates
-          const hang = ((i % 2) + 2) % 2 === 0; // even scrolls hang, odd stand
-          const vy = hang ? 1 : -1;
           const turns = 3;
           const step = (s * 0.82) / (turns * 2);
           ctx.beginPath();
