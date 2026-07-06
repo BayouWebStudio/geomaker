@@ -1,6 +1,6 @@
 # GeoMaker — Privacy Policy
 
-_Last updated: 2026-06-29_
+_Last updated: 2026-07-06_
 
 GeoMaker is a generative-art studio that runs entirely on your device.
 
@@ -28,6 +28,10 @@ The app makes no network requests — every pattern is generated on your device.
   and only happens when you choose it.
 - **No tracking.** GeoMaker does not use the Advertising Identifier (IDFA), App
   Tracking Transparency, or any cross-app tracking.
+- **Purchases are handled by Apple.** The optional one-time unlock is processed
+  entirely by the App Store (StoreKit). GeoMaker never sees your payment
+  details; it only receives Apple's yes/no answer about whether the unlock is
+  owned, which is checked on your device.
 - **Children.** GeoMaker is safe for all ages and collects no data from anyone,
   including children.
 

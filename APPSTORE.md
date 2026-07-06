@@ -18,7 +18,7 @@ Shared with the Vesica Studio listing (same developer account).
 | Secondary category | Entertainment |
 | Support URL | **https://vesica.studio** |
 | Marketing URL (optional) | **https://vesica.studio** |
-| Privacy Policy URL | **https://github.com/BayouWebStudio/geomaker/blob/main/PRIVACY.md** |
+| Privacy Policy URL | **https://vesica.studio/geomaker-privacy.html** (deploy `site/vesica.studio/geomaker-privacy.html` to the vesica-landing repo's `public/` folder first — see `site/vesica.studio/README.md`) |
 | Support email (App Review contact) | **support@vesica.studio** |
 | Price | Free (with a one-time in-app purchase) |
 | In-App Purchase | **GeoMaker Pro Unlock** — non-consumable, `com.bayouwebstudio.geomaker.pro`, **$5.99** |
@@ -133,18 +133,26 @@ patterns — shaped live with your fingertips and saved straight to Photos.
 Ready to upload — real in-app captures at the exact required sizes, in
 `screenshots/appstore/`:
 
-- **iPhone 6.7"** — `1290 × 2796` (PNG, no alpha): `iphone-1-patterns`
-  (browser over the nami wave field), `iphone-2-suminagashi` (combed
-  marbling), `iphone-3-kiku` (packed kiku field + Tune sheet),
-  `iphone-4-sayagata` (fret + palette cards), `iphone-5-penrose`.
-- **iPad 13"** — `2048 × 2732`: `ipad-1-patterns` (kiku field + browser),
-  `ipad-2-girih`, `ipad-3-nami`.
+Designed in the Vesica Studio family style — Cormorant Garamond headlines
+(second line italic, in GeoMaker teal), JetBrains Mono kickers/footers, device
+mockups, and one continuous irezumi wave strip flowing across the whole set so
+the gallery reads as a single connected banner.
+
+- **iPhone 6.7"** — `1290 × 2796` (PNG, no alpha), upload in this order:
+  `iphone-1-cover` ("The pattern is endless."), `iphone-2-touch` ("Shape it
+  by touch."), `iphone-3-japan` ("Old Japan, new ink."), `iphone-4-tune`
+  ("Every lever, yours."), `iphone-5-forever` ("Yours, forever.").
+- **iPad 13"** — `2048 × 2732`: `ipad-1-cover`, `ipad-2-japan`,
+  `ipad-3-geometry`.
 
 These show actual usage (controls + artwork), not splash/title art, per
 Guideline 2.3. Drag the matching set into each device size in App Store Connect.
 
 ## Pre-submit checklist
 
+- [ ] **Deploy the privacy page**: copy `site/vesica.studio/geomaker-privacy.html`
+      into the vesica-landing repo's `public/` folder and deploy, so
+      https://vesica.studio/geomaker-privacy.html is live.
 - [ ] Privacy Policy URL set in App Store Connect (and reachable).
 - [ ] App Privacy = **Data Not Collected**.
 - [ ] Description/keywords mention **no other platforms** (no "web", "Android",
