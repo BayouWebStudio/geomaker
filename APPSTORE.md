@@ -102,37 +102,36 @@ stamp wave crests, spin kaleidoscopes. No account, no ads, works offline."
 (156). Promotional text is the one listing field you can swap any time — reuse
 it later for "New patterns added" announcements.)
 
-**Description:**
+**Description (paste as-is, 2,342 of 4,000 chars):**
 
-> GeoMaker turns simple sliders into endless original art. Pick from 59 pattern
-> engines, then move the levers and watch the artwork redraw instantly.
+> GeoMaker is a pattern studio that never runs dry. Pick one of 59 generative engines, move its levers, and watch original art redraw instantly — every piece grown from a seed, so anything you love can be brought back, tuned again, and saved to Photos in full resolution.
 >
-> • Organic — flow fields, reaction-diffusion, differential growth, Voronoi,
->   mycelium, ink marbling, terrazzo stone
-> • Geometric & sacred — flower of life, mandalas, hex tilings, truchet, Islamic
->   girih, Celtic knots, phyllotaxis
-> • Wallpaper classics — polka-dot & motif wallpapers, stripes & chevrons,
->   herringbone parquet, fish scales, low-poly mesh, circuit boards
-> • Mathematical — Penrose aperiodic tiling, Archimedean tessellations, op art,
->   spirograph, mazes & the Hilbert curve, Greek key frets
-> • Traditional — Japanese wagara, sayagata & asanoha lattices, bishamon
->   armor, kumiko, kintsugi, indigo shibori, irezumi wave-and-cloud
->   backgrounds, chrysanthemum & sakura florals
-> • Fractal — Mandelbrot & Julia, L-systems, the Apollonian gasket
+> TOUCH THE ART
+> Fifteen engines respond to your fingers. Comb floating ink like real suminagashi marbling. Tap wave crests and clouds into an irezumi background. Fracture kintsugi ceramic and paint the gold vein yourself. Bend a maze through a lens, drag the focus of an op-art illusion, morph a living fractal. Turn on kaleidoscope symmetry and one drag becomes six.
 >
-> Shape it by touch: comb the marbling ink, fracture the kintsugi ceramic with a
-> tap, bend a fractal, spin a quasicrystal. Every piece is built from a seed, so
-> the art you love is reproducible — and you can save it to Photos or share it
-> anytime.
+> THE JAPANESE COLLECTION
+> Made by a tattoo artist, GeoMaker goes unusually deep on classical Japanese pattern: sayagata and higaki frets, asanoha hemp-leaf, seigaiha waves, shippō, kikkō, kagome, yagasuri, uroko, ichimatsu, bishamon kikkō armor, matsukawabishi pine-bark, tatewaku rising steam, hanabishi, raimon thunder scrolls, kumiko lattices, kintsugi, indigo shibori, irezumi waves, clouds and mist, and kiku & sakura florals.
 >
-> • 59 pattern engines, each with its own live controls
-> • 18 palettes, from black-and-grey graphite to neon — or desaturate any of them
-> • Line-weight control on every pattern, from hairline to bold marker
-> • Paper-grain and vignette finishing
-> • Works completely offline. No account, no ads, no tracking, no data collected.
+> AND EVERYTHING ELSE
+> • Organic — flow fields, reaction-diffusion, differential growth, mycelium, Voronoi, terrazzo
+> • Sacred & geometric — flower of life, mandalas, Metatron's cube, hex tilings, truchet, Islamic girih, Celtic knots
+> • Wallpaper classics — polka-dot motifs, stripes & chevrons, herringbone parquet, fish scales, low-poly mesh, circuit boards
+> • Mathematical — Penrose aperiodic tiling, Archimedean tessellations, spirograph, mazes & the Hilbert curve, Greek key frets, op art
+> • Fractal — Mandelbrot & Julia, L-systems, the Apollonian gasket, strange attractors
 >
-> Four patterns are free, full-featured, forever. One single purchase unlocks
-> all the rest — no subscription.
+> MAKE IT YOURS
+> • 18 curated palettes, black & grey to neon — or desaturate any palette into greyscale
+> • Line weight on every pattern, from hairline etching to bold marker
+> • Paper grain and vignette finishing
+> • Seeds: same seed, same art — copy a link that reproduces the exact piece
+> • A favorites shelf that stores the full recipe of anything you make
+> • Full-resolution PNG export through the share sheet
+>
+> Four patterns are free forever, fully featured. A single one-time purchase unlocks everything else — no subscription, ever.
+>
+> Private by design: no account, no ads, no tracking, no data collected. Works completely offline.
+>
+> From Vesica Studio — sibling to the Vesica sacred-geometry drawing app.
 
 **Keywords (≤100 chars):**
 `generative,pattern,wallpaper,mandala,fractal,art,sacred geometry,marbling,kintsugi,truchet,design`
