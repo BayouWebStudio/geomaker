@@ -7,7 +7,10 @@ import { TAU, clamp, samplePalette, withAlpha } from '../core/util.js';
 export default {
   id: 'coral',
   name: 'Coral Growth',
-  description: 'A living loop that buckles and folds like coral as it grows.',
+  interactive: true,
+  symmetry: true,
+  hint: 'grab the living edge and pull — it keeps growing around your finger',
+  description: 'A living loop that buckles and folds like coral as it grows — grab the edge and pull it while it grows.',
   params: [
     {
       key: 'shape', label: 'Starting shape', type: 'select', value: 'circle',
@@ -131,12 +134,19 @@ export default {
       }
 
       const lastEdge = closed ? nodes.length - 1 : nodes.length - 2;
-      for (let i = lastEdge; i >= 0; i--) {
+      const splitCap = P.maxNodes * 1.25; // pulled edges may still split a little past done
+      for (let i = lastEdge; i >= 0 && nodes.length < splitCap; i--) {
         const a = nodes[i];
         const b = nodes[(i + 1) % nodes.length];
         if (Math.hypot(b.x - a.x, b.y - a.y) > P.maxLen) {
           nodes.splice(i + 1, 0, { x: (a.x + b.x) / 2 + rng.range(-0.5, 0.5), y: (a.y + b.y) / 2 + rng.range(-0.5, 0.5) });
         }
+      }
+
+      // pinned nodes stick to the finger — the loop grows around the pull
+      for (const pin of pins.values()) {
+        pin.node.x = pin.x;
+        pin.node.y = pin.y;
       }
 
       acc += P.growth;
@@ -184,18 +194,47 @@ export default {
       }
     }
 
+    const pins = new Map(); // per mirror index: { node, x, y }
+
+    function nearestNode(x, y) {
+      let best = null;
+      let bd = Infinity;
+      for (const nd of nodes) {
+        const d = (nd.x - x) * (nd.x - x) + (nd.y - y) * (nd.y - y);
+        if (d < bd) {
+          bd = d;
+          best = nd;
+        }
+      }
+      return best;
+    }
+
     return {
       frame() {
-        if (done) return false;
+        if (done && pins.size === 0) return false;
         for (let s = 0; s < P.speed; s++) step();
         if (P.trails) drawTrail(P.trailAlpha);
         else drawCrisp();
-        if (nodes.length >= P.maxNodes) {
+        if (nodes.length >= P.maxNodes && pins.size === 0) {
           done = true;
           if (P.trails) drawTrail(0.85); // crisp final edge over the layered history
           return false;
         }
         return true;
+      },
+      onDown(x, y, k = 0) {
+        done = false; // waking a finished coral lets it respond to the pull
+        pins.set(k, { node: nearestNode(x, y), x, y });
+      },
+      onMove(x, y, dx, dy, k = 0) {
+        const pin = pins.get(k);
+        if (pin) {
+          pin.x = x;
+          pin.y = y;
+        }
+      },
+      onUp(x, y, dist, k = 0) {
+        pins.delete(k);
       },
     };
   },

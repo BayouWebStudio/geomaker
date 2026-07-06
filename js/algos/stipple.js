@@ -9,7 +9,10 @@ export default {
   id: 'stipple',
   name: 'Dotwork',
   category: 'Organic',
-  description: 'Weighted stippling — density-driven dot fields, like hand-poked dotwork or engraving.',
+  interactive: true,
+  symmetry: true,
+  hint: 'drag to push the dots aside like sand',
+  description: 'Weighted stippling — density-driven dot fields, like hand-poked dotwork. Drag to push the dots like sand.',
   params: [
     {
       key: 'field', label: 'Density field', type: 'select', value: 'noise',
@@ -84,9 +87,24 @@ export default {
     }
 
     const ink = samplePalette(palette.colors, 0.75);
+    const dots = []; // {x, y, r, color} — kept so touch can push them around
     let placed = 0;
     let attempts = 0;
     const maxAttempts = P.dots * 30;
+    let dirty = false;
+
+    function drawDot(d) {
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, d.r, 0, TAU);
+      ctx.fillStyle = d.color;
+      ctx.fill();
+    }
+
+    function redraw() {
+      ctx.fillStyle = palette.bg;
+      ctx.fillRect(0, 0, width, height);
+      for (const d of dots) drawDot(d);
+    }
 
     return {
       frame() {
@@ -104,14 +122,37 @@ export default {
             const gi = Math.floor(y / CELL) * gw + Math.floor(x / CELL);
             (grid[gi] || (grid[gi] = [])).push(x, y);
           }
-          ctx.beginPath();
-          ctx.arc(x, y, P.dotMin + (P.dotMax - P.dotMin) * f, 0, TAU);
-          ctx.fillStyle = P.colorMode === 'field' ? samplePalette(palette.colors, f) : ink;
-          ctx.fill();
+          const dot = {
+            x, y,
+            r: P.dotMin + (P.dotMax - P.dotMin) * f,
+            color: P.colorMode === 'field' ? samplePalette(palette.colors, f) : ink,
+          };
+          dots.push(dot);
+          drawDot(dot);
           placed++;
           n++;
         }
-        return placed < P.dots && attempts < maxAttempts;
+        if (dirty) {
+          redraw();
+          dirty = false;
+        }
+        return true; // stay live so drags can push the dots
+      },
+      onMove(x, y) {
+        // push dots out of a soft disc under the finger, like combing sand
+        const R = Math.min(width, height) * 0.14;
+        const R2 = R * R;
+        for (const d of dots) {
+          const dx = d.x - x;
+          const dy = d.y - y;
+          const d2 = dx * dx + dy * dy;
+          if (d2 > R2 || d2 < 0.01) continue;
+          const dist = Math.sqrt(d2);
+          const push = ((R - dist) / dist) * 0.85;
+          d.x = clamp(d.x + dx * push, 1, width - 1);
+          d.y = clamp(d.y + dy * push, 1, height - 1);
+        }
+        dirty = true;
       },
     };
   },

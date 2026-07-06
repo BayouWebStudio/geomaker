@@ -9,7 +9,10 @@ const CELL = 3; // occupancy-grid resolution in css px
 export default {
   id: 'mycelium',
   name: 'Mycelium',
-  description: 'Branching root-like walkers that wander, split and avoid each other.',
+  interactive: true,
+  symmetry: true,
+  hint: 'tap to plant a spore · drag to seed growth along your finger',
+  description: 'Branching root-like walkers that wander, split and avoid each other — tap or drag to plant new growth.',
   params: [
     { key: 'seeds', label: 'Starting points', type: 'range', min: 1, max: 16, step: 1, value: 6 },
     {
@@ -145,6 +148,16 @@ export default {
       return samplePalette(palette.colors, w.colorT);
     }
 
+    // touch planting: fresh spores sprout wherever the finger goes
+    const lastPlant = new Map(); // per mirror index: [x, y] of last spawn
+    function plant(x, y, a, count) {
+      if (x < 6 || x > width - 6 || y < 6 || y > height - 6) return;
+      for (let i = 0; i < count; i++) {
+        if (walkers.length >= P.maxWalkers + 400) return;
+        spawn(x + rng.range(-2, 2), y + rng.range(-2, 2), a + rng.range(-0.5, 0.5));
+      }
+    }
+
     return {
       frame() {
         let anyAlive = false;
@@ -167,6 +180,19 @@ export default {
           if (w.alive) anyAlive = true;
         }
         return anyAlive;
+      },
+      onDown(x, y, k = 0) {
+        lastPlant.set(k, [x, y]);
+        plant(x, y, rng.random() * TAU, 3);
+      },
+      onMove(x, y, dx, dy, k = 0) {
+        const last = lastPlant.get(k);
+        if (!last || Math.hypot(x - last[0], y - last[1]) < 18) return;
+        lastPlant.set(k, [x, y]);
+        plant(x, y, Math.atan2(dy, dx), 2); // sprout along the drag direction
+      },
+      onUp(x, y, dist, k = 0) {
+        lastPlant.delete(k);
       },
     };
   },

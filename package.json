@@ -1,6 +1,6 @@
 {
   "name": "geomaker",
-  "version": "0.5.6",
+  "version": "0.6.0",
   "description": "GeoMaker — an organic pattern / generative art studio that runs entirely in the browser.",
   "type": "module",
   "scripts": {

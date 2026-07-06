@@ -305,6 +305,12 @@ canvas.addEventListener('pointerdown', (e) => {
   pointer = { lastX: x, lastY: y, dist: 0, id: e.pointerId };
   canvas.setPointerCapture?.(e.pointerId);
   playing = true; // resume the loop so interactive redraws are shown
+  if (finished) {
+    // touching a finished piece wakes it: the instance decides whether it
+    // still has anything to do (it returns false again if truly done)
+    finished = false;
+    setPlayButton();
+  }
   haptic('LIGHT'); // tactile feedback for the touch interaction
   if (instance.onDown) forEachMirror(x, y, 0, 0, (xk, yk, _dx, _dy, k) => instance.onDown(xk, yk, k));
   e.preventDefault();

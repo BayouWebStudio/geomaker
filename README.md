@@ -37,14 +37,14 @@ links and PNG export.
 | ![Pebbles](screenshots/pebbles.jpg) | ![Contours](screenshots/contours.jpg) |
 
 - **Silk Flow** — thousands of particles ride a layered Perlin noise field; their low-alpha trails accumulate into silky ribbons. Levers: particle count, noise scale, swirl, speed, ink opacity/amount, color mapping, edge behavior.
-- **Coral Growth** — differential growth: a loop of nodes that attract their neighbors, repel everything nearby, and split stretched edges, buckling like coral or brain tissue. Watch it grow live, with optional onion-skin trails (growth rings).
+- **Coral Growth** *(interactive)* — differential growth: a loop of nodes that attract their neighbors, repel everything nearby, and split stretched edges, buckling like coral or brain tissue. Grab the living edge and pull — it keeps growing around your finger.
 - **Turing Patterns** — Gray-Scott reaction-diffusion on a torus. Presets for coral / mitosis / worms / maze / solitons, plus raw feed & kill sliders, seeding styles and banded rendering.
 - **Ridgelines** — stacked noise-displaced ridge lines with occlusion fills, like mountain strata or a topographic record. Can animate with a slow drift.
-- **Mycelium** — branching, self-avoiding random walkers that wander, fork, taper and die when they touch existing growth: roots, lightning, fungal nets.
+- **Mycelium** *(interactive)* — branching, self-avoiding random walkers that wander, fork, taper and die when they touch existing growth. Tap to plant a spore; drag to seed growth along your finger.
 - **Pebbles** *(interactive)* — organic circle packing drawn as noise-wobbled flat blobs: river stones, cells. Drag a stone and the pack shoves aside in a wavefront; tap to drop a new one.
 - **Terrazzo** *(interactive)* — café-floor stone: angular polygon chips dart-thrown into a grout field with speckle dust. Drag a chip and the floor shoves around your finger; tap to set a new chip.
 - **Contours** — a topographic map of a fractal noise landscape: smooth elevation bands plus marching-squares iso-lines, optionally drifting.
-- **Dotwork** — weighted stippling: density-driven dot fields with an even-spacing pass, like hand-poked dotwork or engraving stipple.
+- **Dotwork** *(interactive)* — weighted stippling: density-driven dot fields with an even-spacing pass. Drag to push the dots aside like sand.
 - **Voronoi Cells** *(interactive)* — a mosaic of nearest-neighbour cells (cracked glass, scales, stone) built by exact half-plane clipping, with Lloyd relaxation for evenness. Tap to add a cell, drag to move the nearest one.
 
 ### Geometric (sacred geometry & tilings)
@@ -70,12 +70,12 @@ links and PNG export.
 - **Maze & Path** — one continuous line fills the plane: a perfect maze carved by recursive backtracking, the Hilbert space-filling curve, or a hand wobbling spiral, with a palette gradient sweeping along the path.
 - **Greek Key** — classical fret borders (key spirals, T-frets, stepped zigzags) running in banded rows between rails, like a vase or mosaic floor.
 - **Spirograph** — gear-drawn hypotrochoid curves layered into guilloché engraving rosettes; wheel ratio and pen offset reshape the figure.
-- **Circuit Board** — PCB traces with 45° bends that never cross, ending in pads and vias — tech wallpaper on dark palettes, blueprint linework on light ones.
+- **Circuit Board** *(interactive)* — PCB traces with 45° bends that never cross, ending in pads and vias. Drag on the board to route your own trace.
 - **Low-Poly Mesh** *(interactive)* — the faceted-triangle wallpaper look: a jittered point cloud triangulated (Bowyer–Watson) and flat-shaded like cut glass. Drag a vertex and the whole mesh retriangulates live.
 - **Phyllotaxis** *(interactive)* — a sunflower seed-head at the golden angle (Vogel's model). Drag ↔ to detune the divergence angle and watch the spiral arms reorganize, ↕ to change the spacing.
 - **Moiré** *(interactive)* — interference fringes from two overlaid gratings (concentric rings or parallel lines). Drag to move the second layer and shimmer the moiré.
 - **Islamic Girih** — Islamic geometric star patterns: interlocking {n/m} star polygons (8-, 10- or 12-point) on interleaved grids, forming the classic star-and-cross strapwork.
-- **Celtic Knot** — interlaced plaitwork: woven cords that pass over and under by parity, on a straight or diagonal weave.
+- **Celtic Knot** *(interactive)* — interlaced plaitwork: woven cords that pass over and under by parity. Tap a crossing to flip its over/under; drag to re-weave a path.
 - **Cellular Automata** — elementary 1D rules drawn as a space-time triangle (Rule 30/90/110…), or a 2D cyclic automaton that self-organizes into spiral waves.
 - **Quasicrystal** *(interactive)* — many plane waves overlaid into a quasiperiodic interference lattice with N-fold symmetry. Drag to spin and phase-shift it.
 - **Cymatics** *(interactive)* — Chladni plate figures: sand settling on the nodal lines of a vibrating plate. Drag to sweep the two frequencies.
@@ -92,12 +92,12 @@ links and PNG export.
 
 - **Mandelbrot / Julia** *(interactive)* — the escape-time fractal, smooth-shaded. Drag to pan the Mandelbrot, or switch to Julia and drag to morph the seed; zoom and iteration sliders go deep.
 - **L-system** *(interactive)* — Lindenmayer rewrite grammars drawn with a turtle: fractal plants, bushes, the Koch curve, the dragon curve and Sierpinski. Drag to bend the branching angle.
-- **Apollonian Gasket** — infinitely nested mutually-tangent circles, filled via the Descartes Circle Theorem.
+- **Apollonian Gasket** *(interactive)* — infinitely nested mutually-tangent circles via the Descartes Circle Theorem. Drag to reshape the mother circles — the whole nesting recomputes live.
 - **Strange Attractor** *(interactive)* — a chaotic map (Clifford / de Jong) iterated millions of times into smoke-like filaments. Drag to bend the parameters.
 
 ## Interactive patterns (tap & drag)
 
-Eighteen generators respond to the pointer — drag right on the canvas (mouse or touch):
+Twenty-five generators respond to the pointer — drag right on the canvas (mouse or touch):
 
 | | |
 |---|---|
@@ -114,6 +114,8 @@ Eighteen generators respond to the pointer — drag right on the canvas (mouse o
 - **Op Art** — drag to move the focal point of the illusion (the bulge, ring centre, tunnel vanishing point or wave phase).
 - **Pebbles / Terrazzo** — drag a stone or chip; the pack shoves aside around your finger.
 - **Low-Poly Mesh** — drag a vertex; the triangulation reflows live.
+- **Coral / Mycelium / Dotwork** — pull the living coral edge, plant mycelium spores, push stippled dots like sand.
+- **Apollonian / Celtic / Circuit / Kiku** — reshape the gasket's mother circles, flip weave crossings, route PCB traces, shuffle the bouquet.
 
 **Touch symmetry (kaleidoscope input):** the Style sheet has a symmetry control (2× to 12×) that replays your touch around the canvas centre — one drag combs the marbling in six places at once; one tap strikes six mirrored kintsugi fractures. Works on Suminagashi, Kintsugi, Voronoi and Shibori.
 
@@ -139,7 +141,7 @@ A family of traditional Japanese designs, from precise *wagara* tilings to inter
 - **Asanoha (麻の葉)** — a dedicated hemp-leaf star lattice with kumiko-style double-line joinery, rotation and scattered accent fills.
 - **Five more, also standalone:** **Bishamon Kikkō (毘沙門亀甲)** the three-hex armor trefoil, **Matsukawabishi (松皮菱)** pine-bark diamonds, **Tatewaku (立涌)** rising steam, **Hanabishi (花菱)** flower diamonds and **Raimon (雷文)** thunder scrolls.
 - **Irezumi Waves & Clouds** *(interactive)* — the tattoo backgrounds: *nami* waves with spiral curls and foam fingers, *kumo* scallop clouds with concentric echo lines, *kasumi* stepped mist. Tap the canvas to stamp another crest, cloud or mist band exactly where you want it.
-- **Kiku & Sakura** — Japanese florals: layered chrysanthemum blooms, falling notched sakura petals, round ume blossoms with stamens.
+- **Kiku & Sakura** *(interactive)* — Japanese florals: layered chrysanthemum blooms, notched sakura, round ume. Drag a bloom and the bouquet shuffles aside; tap to plant a new one.
 
 ## Finish (make it illustrative)
 
