@@ -946,8 +946,13 @@ function closePaywall() {
 }
 
 async function buyPro() {
-  if (!isNative() || !geoPay()) {
+  if (!isNative()) {
     toast('Purchases live in the iOS app — the web build is open');
+    return;
+  }
+  if (!geoPay()) {
+    // native but the plugin didn't register — a build problem, not a user one
+    toast('Purchases unavailable in this build — please update the app');
     return;
   }
   try {
