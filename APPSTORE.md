@@ -134,7 +134,10 @@ it later for "New patterns added" announcements.)
 > From Vesica Studio — sibling to the Vesica sacred-geometry drawing app.
 
 **Keywords (≤100 chars):**
-`generative,pattern,wallpaper,mandala,fractal,art,sacred geometry,marbling,kintsugi,truchet,design`
+`wallpaper,generative,fractal,irezumi,japanese,marbling,kintsugi,geometry,kaleidoscope,tattoo,seed`
+
+(97 chars. Words already indexed from the name/subtitle — pattern, studio,
+mandalas, waves, sacred, art — are deliberately not repeated.)
 
 **What's New (first release):** First release.
 
